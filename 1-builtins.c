@@ -7,7 +7,7 @@
  *
  * Return: A function pointer to the corresponding builtin.
  */
-int (*get_builtin(char *command))(char **args, char **front)
+int (*get_builtin(char *command))(char **args, char **head)
 {
 	builtin_t funcs[] = {
 		{ "exit", shellby_exit },
@@ -19,44 +19,44 @@ int (*get_builtin(char *command))(char **args, char **front)
 		{ "help", shellby_help },
 		{ NULL, NULL }
 	};
-	int m;
+	int z;
 
-	for (m = 0; funcs[m].name; m++)
+	for (z = 0; funcs[z].name; z++)
 	{
-		if (_strcmp(funcs[m].name, command) == 0)
+		if (_strcmp(funcs[z].name, command) == 0)
 			break;
 	}
-	return (funcs[m].f);
+	return (funcs[z].f);
 }
 
 /**
  * shellby_exit - Causes normal process termination
  * for the shellby shell.
- * @args: An array of arguments containing the exit value.
- * @front: A double pointer to the beginning of args.
+ * @args: An array of arguments containing the exit val.
+ * @head: A double pointer to the initial of args.
  *
  * Return: If there are no arguments - -3.
- *         If the given exit value is invalid - 2.
- *         O/w - exits with the given status value.
+ *         If the given exit val is invalid - 2.
+ *         O/w - exits with the given status val.
  *
  * Description: Upon returning -3, the program exits back in the main function.
  */
-int shellby_exit(char **args, char **front)
+int shellby_exit(char **args, char **head)
 {
-	int m, len_of_int = 10;
-	unsigned int num = 0, max = 1 << (sizeof(int) * 8 - 1);
+	int z, intLength = 10;
+	unsigned int numb = 0, maxi = 1 << (sizeof(int) * 8 - 1);
 
 	if (args[0])
 	{
 		if (args[0][0] == '+')
 		{
-			m = 1;
-			len_of_int++;
+			z = 1;
+			intLength++;
 		}
-		for (; args[0][m]; m++)
+		for (; args[0][z]; z++)
 		{
-			if (m <= len_of_int && args[0][m] >= '0' && args[0][m] <= '9')
-				num = (num * 10) + (args[0][m] - '0');
+			if (z <= intLength && args[0][z] >= '0' && args[0][z] <= '9')
+				numb = (numb * 10) + (args[0][z] - '0');
 			else
 				return (create_error(--args, 2));
 		}
@@ -65,32 +65,32 @@ int shellby_exit(char **args, char **front)
 	{
 		return (-3);
 	}
-	if (num > max - 1)
+	if (numb > maxi - 1)
 		return (create_error(--args, 2));
 	args -= 1;
-	free_args(args, front);
+	free_args(args, head);
 	free_env();
 	free_alias_list(aliases);
-	exit(num);
+	exit(numb);
 }
 
 /**
  * shellby_cd - Changes the current directory of the shellby process.
  * @args:This takes an array of arguments.
- * @front: A double pointer to the beginning of args.
+ * @head: A double pointer to the initial of args.
  *
  * Return: If the given string is not a directory - 2.
- *         If an error occurs - -1.
+ *         If an err_bool occurs - -1.
  *         Otherwise - 0.
  */
-int shellby_cd(char **args, char __attribute__((__unused__)) **front)
+int shellby_cd(char **args, char __attribute__((__unused__)) **head)
 {
-	char **dir_info, *new_line = "\n";
-	char *oldpwd = NULL, *pwd = NULL;
+	char **dir_info, *n_line = "\n";
+	char *pass_old = NULL, *pass = NULL;
 	struct stat dir;
 
-	oldpwd = getcwd(oldpwd, 0);
-	if (!oldpwd)
+	pass_old = getcwd(pass_old, 0);
+	if (!pass_old)
 		return (-1);
 
 	if (args[0])
@@ -105,7 +105,7 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 			}
 			else
 			{
-				free(oldpwd);
+				free(pass_old);
 				return (create_error(args, 2));
 			}
 		}
@@ -116,7 +116,7 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 				chdir(args[0]);
 			else
 			{
-				free(oldpwd);
+				free(pass_old);
 				return (create_error(args, 2));
 			}
 		}
@@ -127,8 +127,8 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 			chdir(*(_getenv("HOME")) + 5);
 	}
 
-	pwd = getcwd(pwd, 0);
-	if (!pwd)
+	pass = getcwd(pass, 0);
+	if (!pass)
 		return (-1);
 
 	dir_info = malloc(sizeof(char *) * 2);
@@ -136,21 +136,21 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 		return (-1);
 
 	dir_info[0] = "OLDPWD";
-	dir_info[1] = oldpwd;
+	dir_info[1] = pass_old;
 	if (shellby_setenv(dir_info, dir_info) == -1)
 		return (-1);
 
 	dir_info[0] = "PWD";
-	dir_info[1] = pwd;
+	dir_info[1] = pass;
 	if (shellby_setenv(dir_info, dir_info) == -1)
 		return (-1);
 	if (args[0] && args[0][0] == '-' && args[0][1] != '-')
 	{
-		write(STDOUT_FILENO, pwd, _strlen(pwd));
-		write(STDOUT_FILENO, new_line, 1);
+		write(STDOUT_FILENO, pass, _strlen(pass));
+		write(STDOUT_FILENO, n_line, 1);
 	}
-	free(oldpwd);
-	free(pwd);
+	free(pass_old);
+	free(pass);
 	free(dir_info);
 	return (0);
 }
@@ -158,12 +158,12 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 /**
  * shellby_help - Displays information about shellby builtin commands.
  * @args: An array of arguments.
- * @front: A pointer to the beginning of args.
+ * @head: A pointer to the initial of args.
  *
- * Return: If an error occurs - -1.
+ * Return: If an err_bool occurs - -1.
  *         Otherwise - 0.
  */
-int shellby_help(char **args, char __attribute__((__unused__)) **front)
+int shellby_help(char **args, char __attribute__((__unused__)) **head)
 {
 	if (!args[0])
 		help_all();
@@ -186,3 +186,4 @@ int shellby_help(char **args, char __attribute__((__unused__)) **front)
 
 	return (0);
 }
+

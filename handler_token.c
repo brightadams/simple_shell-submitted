@@ -11,15 +11,15 @@
  */
 int token_len(char *str, char *delim)
 {
-	int index = 0, len = 0;
+	int index = 0, leng = 0;
 
 	while (*(str + index) && *(str + index) != *delim)
 	{
-		len++;
+		leng++;
 		index++;
 	}
 
-	return (len);
+	return (leng);
 }
 
 /**
@@ -32,12 +32,12 @@ int token_len(char *str, char *delim)
  */
 int count_tokens(char *str, char *delim)
 {
-	int index, tokens = 0, len = 0;
+	int index, tokens = 0, leng = 0;
 
 	for (index = 0; *(str + index); index++)
-		len++;
+		leng++;
 
-	for (index = 0; index < len; index++)
+	for (index = 0; index < leng; index++)
 	{
 		if (*(str + index) != *delim)
 		{
@@ -59,7 +59,7 @@ int count_tokens(char *str, char *delim)
 char **_strtok(char *line, char *delim)
 {
 	char **ptr;
-	int index = 0, tokens, k, letters, l;
+	int index = 0, tokens, p, letters, l;
 
 	tokens = count_tokens(line, delim);
 	if (tokens == 0)
@@ -69,15 +69,15 @@ char **_strtok(char *line, char *delim)
 	if (!ptr)
 		return (NULL);
 
-	for (k = 0; k < tokens; k++)
+	for (p = 0; p < tokens; p++)
 	{
 		while (line[index] == *delim)
 			index++;
 
 		letters = token_len(line + index, delim);
 
-		ptr[k] = malloc(sizeof(char) * (letters + 1));
-		if (!ptr[k])
+		ptr[p] = malloc(sizeof(char) * (letters + 1));
+		if (!ptr[p])
 		{
 			for (index -= 1; index >= 0; index--)
 				free(ptr[index]);
@@ -87,14 +87,14 @@ char **_strtok(char *line, char *delim)
 
 		for (l = 0; l < letters; l++)
 		{
-			ptr[k][l] = line[index];
+			ptr[p][l] = line[index];
 			index++;
 		}
 
-		ptr[k][l] = '\0';
+		ptr[p][l] = '\0';
 	}
-	ptr[k] = NULL;
-	ptr[k + 1] = NULL;
+	ptr[p] = NULL;
+	ptr[p + 1] = NULL;
 
 	return (ptr);
 }

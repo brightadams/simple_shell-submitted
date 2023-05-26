@@ -20,17 +20,17 @@ void sig_handler(int sig)
  * execute - function that executes a command
  * in a child process
  * @args: array of arguments
- * @front: double pointer to the beginning
+ * @head: double pointer to the initial
  * of the arguments
  *
- * Return: an error code if an error occurs, or
- * the exit value of the last command
+ * Return: an err_bool code if an err_bool occurs, or
+ * the exit value of the tail command
  * executed if otherwise
  */
-int execute(char **args, char **front)
+int execute(char **args, char **head)
 {
 	pid_t child_pid;
-	int status, flag = 0, ret = 0;
+	int status, flag = 0, y = 0;
 	char *command = args[0];
 
 	if (command[0] != '/' && command[0] != '.')
@@ -42,9 +42,9 @@ int execute(char **args, char **front)
 	if (!command || (access(command, F_OK) == -1))
 	{
 		if (errno == EACCES)
-			ret = (create_error(args, 126));
+			y = (create_error(args, 126));
 		else
-			ret = (create_error(args, 127));
+			y = (create_error(args, 127));
 	}
 	else
 	{
@@ -60,21 +60,21 @@ int execute(char **args, char **front)
 		{
 			execve(command, args, environ);
 			if (errno == EACCES)
-				ret = (create_error(args, 126));
+				y = (create_error(args, 126));
 			free_env();
-			free_args(args, front);
+			free_args(args, head);
 			free_alias_list(aliases);
-			_exit(ret);
+			_exit(y);
 		}
 		else
 		{
 			wait(&status);
-			ret = WEXITSTATUS(status);
+			y = WEXITSTATUS(status);
 		}
 	}
 	if (flag)
 		free(command);
-	return (ret);
+	return (y);
 }
 
 /**
@@ -83,13 +83,13 @@ int execute(char **args, char **front)
  * @argc: number of arguments provided
  * @argv: array of pointers to the arguments passed
  *
- * Return: value of the last executed command
+ * Return: value of the tail executed command
  */
 int main(int argc, char *argv[])
 {
-	int ret = 0, retn;
+	int y = 0, retn;
 	int *exe_ret = &retn;
-	char *prompt = "$ ", *new_line = "\n";
+	char *prompt = "$ ", *n_line = "\n";
 
 	name = argv[0];
 	hist = 1;
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 1)
 	{
-		ret = proc_file_commands(argv[1], exe_ret);
+		y = proc_file_commands(argv[1], exe_ret);
 		free_env();
 		free_alias_list(aliases);
 		return (*exe_ret);
@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
 
 	if (!isatty(STDIN_FILENO))
 	{
-		while (ret != END_OF_FILE && ret != EXIT)
-			ret = handle_args(exe_ret);
+		while (y != END_OF_FILE && y != EXIT)
+			y = handle_args(exe_ret);
 		free_env();
 		free_alias_list(aliases);
 		return (*exe_ret);
@@ -121,11 +121,11 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		write(STDOUT_FILENO, prompt, 2);
-		ret = handle_args(exe_ret);
-		if (ret == END_OF_FILE || ret == EXIT)
+		y = handle_args(exe_ret);
+		if (y == END_OF_FILE || y == EXIT)
 		{
-			if (ret == END_OF_FILE)
-				write(STDOUT_FILENO, new_line, 1);
+			if (y == END_OF_FILE)
+				write(STDOUT_FILENO, n_line, 1);
 			free_env();
 			free_alias_list(aliases);
 			exit(*exe_ret);

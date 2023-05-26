@@ -3,12 +3,12 @@
  * get_location - funcion that locates a command in the PATH
  * @command: command to be located
  *
- * Return: NULL if an error occurs or the command cannot be located
+ * Return: NULL if an err_bool occurs or the command cannot be located
  * or the full pathname of the command if otherwise
  */
 char *get_location(char *command)
 {
-	char **path, *temp;
+	char **path, *tem;
 	list_t *dirs, *head;
 	struct stat st;
 
@@ -21,22 +21,22 @@ char *get_location(char *command)
 
 	while (dirs)
 	{
-		temp = malloc(_strlen(dirs->dir) + _strlen(command) + 2);
-		if (!temp)
+		tem = malloc(_strlen(dirs->dir) + _strlen(command) + 2);
+		if (!tem)
 			return (NULL);
 
-		_strcpy(temp, dirs->dir);
-		_strcat(temp, "/");
-		_strcat(temp, command);
+		_strcpy(tem, dirs->dir);
+		_strcat(tem, "/");
+		_strcat(tem, command);
 
-		if (stat(temp, &st) == 0)
+		if (stat(tem, &st) == 0)
 		{
 			free_list(head);
-			return (temp);
+			return (tem);
 		}
 
 		dirs = dirs->next;
-		free(temp);
+		free(tem);
 	}
 
 	free_list(head);
@@ -54,46 +54,46 @@ char *get_location(char *command)
  */
 char *fill_path_dir(char *path)
 {
-	int m, length = 0;
-	char *path_copy, *pwd;
+	int z, len = 0;
+	char *path_copy, *pass;
 
-	pwd = *(_getenv("PWD")) + 4;
-	for (m = 0; path[m]; m++)
+	pass = *(_getenv("PWD")) + 4;
+	for (z = 0; path[z]; z++)
 	{
-		if (path[m] == ':')
+		if (path[z] == ':')
 		{
-			if (path[m + 1] == ':' || m == 0 || path[m + 1] == '\0')
-				length += _strlen(pwd) + 1;
+			if (path[z + 1] == ':' || z == 0 || path[z + 1] == '\0')
+				len += _strlen(pass) + 1;
 			else
-				length++;
+				len++;
 		}
 		else
-			length++;
+			len++;
 	}
-	path_copy = malloc(sizeof(char) * (length + 1));
+	path_copy = malloc(sizeof(char) * (len + 1));
 	if (!path_copy)
 		return (NULL);
 	path_copy[0] = '\0';
-	for (m = 0; path[m]; m++)
+	for (z = 0; path[z]; z++)
 	{
-		if (path[m] == ':')
+		if (path[z] == ':')
 		{
-			if (m == 0)
+			if (z == 0)
 			{
-				_strcat(path_copy, pwd);
+				_strcat(path_copy, pass);
 				_strcat(path_copy, ":");
 			}
-			else if (path[m + 1] == ':' || path[m + 1] == '\0')
+			else if (path[z + 1] == ':' || path[z + 1] == '\0')
 			{
 				_strcat(path_copy, ":");
-				_strcat(path_copy, pwd);
+				_strcat(path_copy, pass);
 			}
 			else
 				_strcat(path_copy, ":");
 		}
 		else
 		{
-			_strncat(path_copy, &path[m], 1);
+			_strncat(path_copy, &path[z], 1);
 		}
 	}
 	return (path_copy);

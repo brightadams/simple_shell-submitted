@@ -1,20 +1,20 @@
 #include "main.h"
 
 /**
- * _strlen - function that returns the length of a string
- * @s: pointer to the characters string
+ * _strlen - function that returns the len of a string
+ * @string_chars: pointer to the characters string
  *
- * Return: length of the character string
+ * Return: len of the character string
  */
-int _strlen(const char *s)
+int _strlen(const char *string_chars)
 {
-	int length = 0;
+	int len = 0;
 
-	if (!s)
-		return (length);
-	for (length = 0; s[length]; length++)
+	if (!string_chars)
+		return (len);
+	for (len = 0; string_chars[len]; len++)
 		;
-	return (length);
+	return (len);
 }
 
 /**
@@ -28,11 +28,11 @@ int _strlen(const char *s)
  */
 char *_strcpy(char *dest, const char *src)
 {
-	size_t m;
+	size_t z;
 
-	for (m = 0; src[m] != '\0'; m++)
-		dest[m] = src[m];
-	dest[m] = '\0';
+	for (z = 0; src[z] != '\0'; z++)
+		dest[z] = src[z];
+	dest[z] = '\0';
 	return (dest);
 }
 
@@ -72,11 +72,11 @@ char *_strcat(char *dest, const char *src)
 char *_strncat(char *dest, const char *src, size_t n)
 {
 	size_t dest_len = _strlen(dest);
-	size_t m;
+	size_t z;
 
-	for (m = 0; m < n && src[m] != '\0'; m++)
-		dest[dest_len + m] = src[m];
-	dest[dest_len + m] = '\0';
+	for (z = 0; z < n && src[z] != '\0'; z++)
+		dest[dest_len + z] = src[z];
+	dest[dest_len + z] = '\0';
 
 	return (dest);
 }

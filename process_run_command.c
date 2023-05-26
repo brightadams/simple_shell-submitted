@@ -2,7 +2,7 @@
 
 /**
  * cant_open - when the file doesn't exist or lacks proper permissions, print
- * a cant open error.
+ * a cant open err_bool.
  * @file_path: Path to the supposed file.
  *
  * Return: 127.
@@ -10,31 +10,31 @@
 
 int cant_open(char *file_path)
 {
-	char *error, *hist_str;
-	int len;
+	char *err_bool, *history_string;
+	int leng;
 
-	hist_str = _itoa(hist);
-	if (!hist_str)
+	history_string = _itoa(hist);
+	if (!history_string)
 		return (127);
 
-	len = _strlen(name) + _strlen(hist_str) + _strlen(file_path) + 16;
-	error = malloc(sizeof(char) * (len + 1));
-	if (!error)
+	leng = _strlen(name) + _strlen(history_string) + _strlen(file_path) + 16;
+	err_bool = malloc(sizeof(char) * (leng + 1));
+	if (!err_bool)
 	{
-		free(hist_str);
+		free(history_string);
 		return (127);
 	}
 
-	_strcpy(error, name);
-	_strcat(error, ": ");
-	_strcat(error, hist_str);
-	_strcat(error, ": Can't open ");
-	_strcat(error, file_path);
-	_strcat(error, "\n");
+	_strcpy(err_bool, name);
+	_strcat(err_bool, ": ");
+	_strcat(err_bool, history_string);
+	_strcat(err_bool, ": Can't open ");
+	_strcat(err_bool, file_path);
+	_strcat(err_bool, "\n");
 
-	free(hist_str);
-	write(STDERR_FILENO, error, len);
-	free(error);
+	free(history_string);
+	write(STDERR_FILENO, err_bool, leng);
+	free(err_bool);
 	return (127);
 }
 
@@ -42,20 +42,20 @@ int cant_open(char *file_path)
  * proc_file_commands -This Takes a file and attempts to run the commands stored
  * within.
  * @file_path: Path to the file.
- * @exe_ret: Return value of the last executed command.
+ * @exe_ret: Return value of the tail executed command.
  *
  * Return: If file couldn't be opened - 127.
  *	   If malloc fails - -1.
- *	   Otherwise the return value of the last command ran.
+ *	   Otherwise the return value of the tail command ran.
  */
 int proc_file_commands(char *file_path, int *exe_ret)
 {
-	ssize_t file, b_read, m;
+	ssize_t file, b_read, z;
 	unsigned int line_size = 0;
 	unsigned int old_size = 120;
-	char *line, **args, **front;
+	char *line, **args, **head;
 	char buffer[120];
-	int ret;
+	int y;
 
 	hist = 0;
 	file = open(file_path, O_RDONLY);
@@ -77,15 +77,15 @@ int proc_file_commands(char *file_path, int *exe_ret)
 		_strcat(line, buffer);
 		old_size = line_size;
 	} while (b_read);
-	for (m = 0; line[m] == '\n'; m++)
-		line[m] = ' ';
-	for (; m < line_size; m++)
+	for (z = 0; line[z] == '\n'; z++)
+		line[z] = ' ';
+	for (; z < line_size; z++)
 	{
-		if (line[m] == '\n')
+		if (line[z] == '\n')
 		{
-			line[m] = ';';
-			for (m += 1; m < line_size && line[m] == '\n'; m++)
-				line[m] = ' ';
+			line[z] = ';';
+			for (z += 1; z < line_size && line[z] == '\n'; z++)
+				line[z] = ' ';
 		}
 	}
 	variable_replacement(&line, exe_ret);
@@ -100,22 +100,22 @@ int proc_file_commands(char *file_path, int *exe_ret)
 		free_args(args, args);
 		return (*exe_ret);
 	}
-	front = args;
+	head = args;
 
-	for (m = 0; args[m]; m++)
+	for (z = 0; args[z]; z++)
 	{
-		if (_strncmp(args[m], ";", 1) == 0)
+		if (_strncmp(args[z], ";", 1) == 0)
 		{
-			free(args[m]);
-			args[m] = NULL;
-			ret = call_args(args, front, exe_ret);
-			args = &args[++m];
-			m = 0;
+			free(args[z]);
+			args[z] = NULL;
+			y = call_args(args, head, exe_ret);
+			args = &args[++z];
+			z = 0;
 		}
 	}
 
-	ret = call_args(args, front, exe_ret);
+	y = call_args(args, head, exe_ret);
 
-	free(front);
-	return (ret);
+	free(head);
+	return (y);
 }

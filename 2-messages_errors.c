@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * error_126 - function that Creates an error
+ * error_126 - function that Creates an err_bool
  * message for permission denied failures
  * @args: array of arguments passed
  *
@@ -9,63 +9,63 @@
  */
 char *error_126(char **args)
 {
-	char *error, *hist_str;
-	int len;
+	char *err_bool, *history_string;
+	int leng;
 
-	hist_str = _itoa(hist);
-	if (!hist_str)
+	history_string = _itoa(hist);
+	if (!history_string)
 		return (NULL);
 
-	len = _strlen(name) + _strlen(hist_str) + _strlen(args[0]) + 24;
-	error = malloc(sizeof(char) * (len + 1));
-	if (!error)
+	leng = _strlen(name) + _strlen(history_string) + _strlen(args[0]) + 24;
+	err_bool = malloc(sizeof(char) * (leng + 1));
+	if (!err_bool)
 	{
-		free(hist_str);
+		free(history_string);
 		return (NULL);
 	}
 
-	_strcpy(error, name);
-	_strcat(error, ": ");
-	_strcat(error, hist_str);
-	_strcat(error, ": ");
-	_strcat(error, args[0]);
-	_strcat(error, ": Permission denied\n");
+	_strcpy(err_bool, name);
+	_strcat(err_bool, ": ");
+	_strcat(err_bool, history_string);
+	_strcat(err_bool, ": ");
+	_strcat(err_bool, args[0]);
+	_strcat(err_bool, ": Permission denied\n");
 
-	free(hist_str);
-	return (error);
+	free(history_string);
+	return (err_bool);
 }
 
 /**
- * error_127 - function that creates an error
+ * error_127 - function that creates an err_bool
  * message for command not found failures
  * @args: array of arguments passed
  *
- * Return: error string
+ * Return: err_bool string
  */
 char *error_127(char **args)
 {
-	char *error, *hist_str;
-	int len;
+	char *err_bool, *history_string;
+	int leng;
 
-	hist_str = _itoa(hist);
-	if (!hist_str)
+	history_string = _itoa(hist);
+	if (!history_string)
 		return (NULL);
 
-	len = _strlen(name) + _strlen(hist_str) + _strlen(args[0]) + 16;
-	error = malloc(sizeof(char) * (len + 1));
-	if (!error)
+	leng = _strlen(name) + _strlen(history_string) + _strlen(args[0]) + 16;
+	err_bool = malloc(sizeof(char) * (leng + 1));
+	if (!err_bool)
 	{
-		free(hist_str);
+		free(history_string);
 		return (NULL);
 	}
 
-	_strcpy(error, name);
-	_strcat(error, ": ");
-	_strcat(error, hist_str);
-	_strcat(error, ": ");
-	_strcat(error, args[0]);
-	_strcat(error, ": not found\n");
+	_strcpy(err_bool, name);
+	_strcat(err_bool, ": ");
+	_strcat(err_bool, history_string);
+	_strcat(err_bool, ": ");
+	_strcat(err_bool, args[0]);
+	_strcat(err_bool, ": not found\n");
 
-	free(hist_str);
-	return (error);
+	free(history_string);
+	return (err_bool);
 }
