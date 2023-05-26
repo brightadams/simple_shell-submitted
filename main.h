@@ -23,7 +23,7 @@ char *name;
 
 /**
  * struct list_s - A new struct type defining a linked list.
- * @dir: A directory path.
+ * @dir: A directory pathName.
  * @next: A pointer to another struct list_s.
  */
 typedef struct list_s
@@ -35,12 +35,12 @@ typedef struct list_s
 /**
  * struct builtin_s - A new struct type defining builtin commands.
  * @name: The name of the builtin command.
- * @f: A function pointer to the builtin command's function.
+ * @f: A function pointer to the builtin command'string_chars function.
  */
 typedef struct builtin_s
 {
         char *name;
-        int (*f)(char **argv, char **front);
+        int (*f)(char **argv, char **head);
 } builtin_t;
 
 /**
@@ -60,90 +60,90 @@ typedef struct alias_s
 alias_t *aliases;
 
 
-list_t *get_path_dir(char *path);
-int execute(char **args, char **front);
+list_t *get_dir_path(char *pathName);
+int execute(char **args, char **head);
 void free_list(list_t *head);
-char *_itoa(int num);
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-char **_strtok(char *line, char *delim);
-char *get_location(char *command);
+char *stringify(int numb);
+ssize_t line_getter(char **linePtr, size_t *n, FILE *stream);
+void *re_allocate(void *pointer, unsigned int size_of_old_line, unsigned int new_size);
+char **_strtok(char *line_read, char *deli);
+char *command_path(char *command);
 
 
-int handle_args(int *exe_ret);
-int check_args(char **args);
-void free_args(char **args, char **front);
+int _args_handler(int *exe_ret);
+int args_checker(char **args);
+void remove_args_from_memory(char **args, char **head);
 char **replace_aliases(char **args);
-void handle_line(char **line, ssize_t read);
+void _line_input(char **line_read, ssize_t read);
 void variable_replacement(char **args, int *exe_ret);
-int run_args(char **args, char **front, int *exe_ret);
-char *get_args(char *line, int *exe_ret);
-int call_args(char **args, char **front, int *exe_ret);
+int exec_args(char **args, char **head, int *exe_ret);
+char *_args_get(char *line_read, int *exe_ret);
+int _args_call(char **args, char **head, int *exe_ret);
 
 
-char *_strchr(char *s, char c);
-int _strspn(char *s, char *accept);
-int _strcmp(char *s1, char *s2);
-int _strncmp(const char *s1, const char *s2, size_t n);
-char *_strcpy(char *dest, const char *src);
-int _strlen(const char *s);
-char *_strcat(char *dest, const char *src);
-char *_strncat(char *dest, const char *src, size_t n);
+char *_find_char(char *string_chars, char c);
+int _string_prefix_len(char *string_chars, char *accept);
+int compare_string(char *string1_pointer, char *string2_pointer);
+int compare_n_string(const char *string1_pointer, const char *string2_pointer, size_t n);
+char *_copy_string(char *string_destination, const char *string_source);
+int _str_len(const char *string_chars);
+char *_string_concat(char *string_destination, const char *string_source);
+char *_string_n_concat(char *string_destination, const char *string_source, size_t n);
 
 
-int (*get_builtin(char *command))(char **args, char **front);
-int shellby_cd(char **args, char __attribute__((__unused__)) **front);
-int shellby_alias(char **args, char __attribute__((__unused__)) **front);
-int shellby_help(char **args, char __attribute__((__unused__)) **front);
-int shellby_setenv(char **args, char __attribute__((__unused__)) **front);
-int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front);
-int shellby_exit(char **args, char **front);
-int shellby_env(char **args, char __attribute__((__unused__)) **front);
+int (*get_builtin(char *command))(char **args, char **head);
+int shellby_cd(char **args, char __attribute__((__unused__)) **head);
+int alias_for_shellby(char **args, char __attribute__((__unused__)) **head);
+int shellby_help(char **args, char __attribute__((__unused__)) **head);
+int _modify_env(char **args, char __attribute__((__unused__)) **head);
+int _remove_env(char **args, char __attribute__((__unused__)) **head);
+int shellby_exit(char **args, char **head);
+int _curr_env(char **args, char __attribute__((__unused__)) **head);
 
 
-int shellby_alias(char **args, char __attribute__((__unused__)) **front);
-void set_alias(char *var_name, char *value);
-void print_alias(alias_t *alias);
+int alias_for_shellby(char **args, char __attribute__((__unused__)) **head);
+void set_alias_value(char *variable_name, char *value);
+void display_alias(alias_t *alias);
 
 
-void handle_line(char **line, ssize_t read);
-ssize_t get_new_len(char *line);
-void logical_ops(char *line, ssize_t *new_len);
-
-
-
-char **_getenv(const char *var);
-void free_env(void);
-char **_copyenv(void);
-
-
-char *error_2_syntax(char **args);
-char *error_126(char **args);
-char *error_127(char **args);
-int create_error(char **args, int err);
-char *error_env(char **args);
-char *error_1(char **args);
-char *error_2_exit(char **args);
-char *error_2_cd(char **args);
+void _line_input(char **line_read, ssize_t read);
+ssize_t _new_line(char *line_read);
+void _operators_logical(char *line_read, ssize_t *n_length);
 
 
 
+char **_env_get(const char *varia);
+void _env_free(void);
+char **dup_env(void);
 
-alias_t *add_alias_end(alias_t **head, char *name, char *value);
-list_t *add_node_end(list_t **head, char *dir);
-void free_alias_list(alias_t *head);
+
+char *error_syntax(char **args);
+char *_perm_errors(char **args);
+char *not_found_errors(char **args);
+int error_creator(char **args, int err);
+char *shellby_error_env(char **args);
+char *error_for_alias(char **args);
+char *exit_errors(char **args);
+char *cd_errors(char **args);
+
+
+
+
+alias_t *append_alias(alias_t **head, char *name, char *value);
+list_t *node_append(list_t **head, char *dir);
+void free_alias(alias_t *head);
 void free_list(list_t *head);
 
-void help_env(void);
-void help_setenv(void);
-void help_unsetenv(void);
+void _env_help(void);
+void _setenv_help(void);
+void _unsetenv_helper(void);
 void help_history(void);
-void help_all(void);
-void help_alias(void);
-void help_cd(void);
-void help_exit(void);
-void help_help(void);
+void show_all_commands(void);
+void show_help_alias(void);
+void show_help_cd(void);
+void exit_help(void);
+void help_helper(void);
 
-int proc_file_commands(char *file_path, int *exe_ret);
+int file_executor(char *file_path, int *exe_ret);
 
 #endif 

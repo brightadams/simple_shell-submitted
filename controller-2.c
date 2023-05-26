@@ -1,13 +1,13 @@
 #include "main.h"
 
 /**
- * num_len - function that counts the digital
- * length of a number
- * @numb: The number to be measured
+ * _num_len - Determines the length of a number in terms of digits.
+ * @numb: The number to be measured.
  *
- * Return: the digital lenghth
+ * Return: The count of digits in the given number.
  */
-int num_len(int numb)
+
+int _num_len(int numb)
 {
 	unsigned int numb1;
 	int leng = 1;
@@ -31,16 +31,16 @@ int num_len(int numb)
 }
 
 /**
- * _itoa - function that converts an
- * integer to a string
- * @numb: the integer to be converted
+ * stringify - Converts an integer to its string representation.
+ * @numb: The integer to be converted.
  *
- * Return: converted string
+ * Return: The string representation of the given integer.
  */
-char *_itoa(int numb)
+
+char *stringify(int numb)
 {
 	char *buffer;
-	int leng = num_len(numb);
+	int leng = _num_len(numb);
 	unsigned int numb1;
 
 	buffer = malloc(sizeof(char) * (leng + 1));
@@ -71,41 +71,41 @@ char *_itoa(int numb)
 
 
 /**
- * create_error - function that Writes a custom
- * err_bool message
- * @args: array of arguments
- * @err: value of the err_bool
+ * error_creator - Generates a customized error message.
+ * @args: An array of arguments.
+ * @err: The value of the error.
  *
- * Return: the err_bool value
+ * Return: The error value.
  */
-int create_error(char **args, int err)
+
+int error_creator(char **args, int err)
 {
 	char *err_bool;
 
 	switch (err)
 	{
 	case -1:
-		err_bool = error_env(args);
+		err_bool = shellby_error_env(args);
 		break;
 	case 1:
-		err_bool = error_1(args);
+		err_bool = error_for_alias(args);
 		break;
 	case 2:
 		if (*(args[0]) == 'e')
-			err_bool = error_2_exit(++args);
+			err_bool = exit_errors(++args);
 		else if (args[0][0] == ';' || args[0][0] == '&' || args[0][0] == '|')
-			err_bool = error_2_syntax(args);
+			err_bool = error_syntax(args);
 		else
-			err_bool = error_2_cd(args);
+			err_bool = cd_errors(args);
 		break;
 	case 126:
-		err_bool = error_126(args);
+		err_bool = _perm_errors(args);
 		break;
 	case 127:
-		err_bool = error_127(args);
+		err_bool = not_found_errors(args);
 		break;
 	}
-	write(STDERR_FILENO, err_bool, _strlen(err_bool));
+	write(STDERR_FILENO, err_bool, _str_len(err_bool));
 
 	if (err_bool)
 		free(err_bool);

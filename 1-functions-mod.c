@@ -1,12 +1,17 @@
 #include "main.h"
 
 /**
- * _strlen - function that returns the length of a string
- * @string_chars: pointer to the characters string
+ * _str_len - Calculates the length of a string.
+ * @string_chars: Pointer to the string.
  *
- * Return: length of the character string
+ * Return: Length of the string.
+ *
+ * Description: This function takes a pointer to a string and determines the length
+ *              of the string by iterating through each character until the null
+ *              terminator is encountered. It returns the length of the string.
  */
-int _strlen(const char *string_chars)
+
+int _str_len(const char *string_chars)
 {
 	int length = 0;
 
@@ -18,15 +23,21 @@ int _strlen(const char *string_chars)
 }
 
 /**
- * _strcpy - function that copies the contents of the string
- * pointed to by string_source to the buffer pointed to by string_destination, including
- * the terminating null byte of the string
- * @string_destination: pointer to the destination of string to be copied
- * @string_source: pointer to the string_source of the source string
+ * _copy_string - Copies the contents of the string pointed to by string_source to the
+ *           buffer pointed to by string_destination, including the terminating null byte.
+ * @string_destination: Pointer to the destination buffer.
+ * @string_source: Pointer to the source string.
  *
- * Return: pointer to string_destination
+ * Return: Pointer to the destination buffer.
+ *
+ * Description: This function copies the contents of the string pointed to by
+ *              string_source to the buffer pointed to by string_destination,
+ *              including the terminating null byte of the string. It assumes that
+ *              the destination buffer is large enough to hold the entire source string.
+ *              The function returns a pointer to the destination buffer.
  */
-char *_strcpy(char *string_destination, const char *string_source)
+
+char *_copy_string(char *string_destination, const char *string_source)
 {
 	size_t z;
 
@@ -37,13 +48,14 @@ char *_strcpy(char *string_destination, const char *string_source)
 }
 
 /**
- * _strcat - function that Concantenates two strings
- * @string_destination: a pointer to destination string
- * @string_source: a pointer to source string
+ * _string_concat - Concatenates two strings.
+ * @string_destination: Points to the destination string.
+ * @string_source: Points to  source string.
  *
- * Return: pointer to destination string
+ * Return: returns to the destination string.
  */
-char *_strcat(char *string_destination, const char *string_source)
+
+char *_string_concat(char *string_destination, const char *string_source)
 {
 	char *temp_destination;
 	const char *temp_source;
@@ -61,17 +73,17 @@ char *_strcat(char *string_destination, const char *string_source)
 }
 
 /**
- * _strncat - function that concantenates two strings where n
- * number of bytes_size are copied from source
- * @string_destination: a pointer to the destination string
- * @string_source: a pointer to the source string
- * @n: number of bytes_size to copy from string_source
+ * my_strncat - Concatenates two strings up to a specified number of bytes.
+ * @string_destination: Pointer to the destination string.
+ * @string_source: Pointer to the source string.
+ * @n: Number of bytes to copy from source.
  *
- * Return: pointer to destination string
+ * Return: Pointer to the destination string.
  */
-char *_strncat(char *string_destination, const char *string_source, size_t n)
+
+char *_string_n_concat(char *string_destination, const char *string_source, size_t n)
 {
-	size_t destination_len = _strlen(string_destination);
+	size_t destination_len = _str_len(string_destination);
 	size_t z;
 
 	for (z = 0; z < n && string_source[z] != '\0'; z++)

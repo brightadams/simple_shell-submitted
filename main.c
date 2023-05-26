@@ -1,12 +1,15 @@
 #include "main.h"
 
 /**
- * sig_handler - function that Prints a new
- * prompter upon receiving a signal
- * @sig: The signal received
+ * sig_handler - Prints a new prompt upon receiving a signal.
+ * @sig: The signal received.
  *
- * Return: void
+ * Description: This function is a signal handler that is called when a signal is received.
+ *              It prints a new prompt to indicate that a signal has been received.
+ *
+ * Return: void.
  */
+
 void sig_handler(int sig)
 {
 	char *new_prompt = "\n$ ";
@@ -17,16 +20,19 @@ void sig_handler(int sig)
 }
 
 /**
- * execute - function that executes a command
- * in a child process
- * @args: array of arguments
- * @head: double pointer to the initial
- * of the arguments
+ * execute - Command gets executed in a child process.
+ * @args: args array
+ * @head: Double pointer to the first leters of the arguments.
  *
- * Return: an err_bool code if an err_bool occurs, or
- * the exit value of the tail command
- * executed if otherwise
+ * Return: An error code if an error occurs, or
+ * the exit value of the last executed command if otherwise.
+ *
+ * Description: This function runs a command in a separate child process.
+ *              It takes an array of arguments and executes the command using the execvp system call.
+ *              The function returns the exit value of the command if it is executed successfully.
+ *              If an error occurs during execution, it returns an error code.
  */
+
 int execute(char **args, char **head)
 {
 	pid_t child_pid;
@@ -36,15 +42,15 @@ int execute(char **args, char **head)
 	if (command[0] != '/' && command[0] != '.')
 	{
 		flag = 1;
-		command = get_location(command);
+		command = command_path(command);
 	}
 
 	if (!command || (access(command, F_OK) == -1))
 	{
 		if (errno == EACCES)
-			y = (create_error(args, 126));
+			y = (error_creator(args, 126));
 		else
-			y = (create_error(args, 127));
+			y = (error_creator(args, 127));
 	}
 	else
 	{
@@ -60,10 +66,10 @@ int execute(char **args, char **head)
 		{
 			execve(command, args, environ);
 			if (errno == EACCES)
-				y = (create_error(args, 126));
-			free_env();
-			free_args(args, head);
-			free_alias_list(aliases);
+				y = (error_creator(args, 126));
+			_env_free();
+			remove_args_from_memory(args, head);
+			free_alias(aliases);
 			_exit(y);
 		}
 		else
@@ -78,13 +84,17 @@ int execute(char **args, char **head)
 }
 
 /**
- * main - function that runs simple
- * UNIX command interpreter
- * @argc: number of arguments provided
- * @argv: array of pointers to the arguments passed
+ * main - The main function that runs a simple UNIX command interpreter.
+ * @argc: number of arguments provided.
+ * @argv: Array of pointers to the arguments passed.
  *
- * Return: value of the tail executed command
+ * Return: The exit value of the last executed command.
+ *
+ * Description: This is the entry point of the program and serves as the main loop of the shell.
+ *              It reads user input, parses it into commands, and executes them accordingly.
+ *              The function returns the exit value of the last executed command.
  */
+
 int main(int argc, char *argv[])
 {
 	int y = 0, retn;
@@ -97,42 +107,42 @@ int main(int argc, char *argv[])
 	signal(SIGINT, sig_handler);
 
 	*exe_ret = 0;
-	environ = _copyenv();
+	environ = dup_env();
 	if (!environ)
 		exit(-100);
 
 	if (argc != 1)
 	{
-		y = proc_file_commands(argv[1], exe_ret);
-		free_env();
-		free_alias_list(aliases);
+		y = file_executor(argv[1], exe_ret);
+		_env_free();
+		free_alias(aliases);
 		return (*exe_ret);
 	}
 
 	if (!isatty(STDIN_FILENO))
 	{
 		while (y != END_OF_FILE && y != EXIT)
-			y = handle_args(exe_ret);
-		free_env();
-		free_alias_list(aliases);
+			y = _args_handler(exe_ret);
+		_env_free();
+		free_alias(aliases);
 		return (*exe_ret);
 	}
 
 	while (1)
 	{
 		write(STDOUT_FILENO, prompter, 2);
-		y = handle_args(exe_ret);
+		y = _args_handler(exe_ret);
 		if (y == END_OF_FILE || y == EXIT)
 		{
 			if (y == END_OF_FILE)
 				write(STDOUT_FILENO, n_line, 1);
-			free_env();
-			free_alias_list(aliases);
+			_env_free();
+			free_alias(aliases);
 			exit(*exe_ret);
 		}
 	}
 
-	free_env();
-	free_alias_list(aliases);
+	_env_free();
+	free_alias(aliases);
 	return (*exe_ret);
 }

@@ -1,15 +1,16 @@
 #include "main.h"
 
 /**
- * token_len - function that loocates the delimiter
- * ind marking the end of the first token
- * @str: the string that will be searched
- * @deli: delimiter character
+ * get_token_length - Finds the index of the delimiter that marks
+ *             the end of the first token in a string.
+ * @str: The string to be searched.
+ * @deli: The delimiter character.
  *
- * Return: delimiter ind marking the end of
- * intitial token pointed to be str
+ * Return: The index of the delimiter that marks the end of
+ *         the initial token pointed to by str.
  */
-int token_len(char *str, char *deli)
+
+int get_token_length(char *str, char *deli)
 {
 	int ind = 0, leng = 0;
 
@@ -23,14 +24,15 @@ int token_len(char *str, char *deli)
 }
 
 /**
- * count_tokens - function that counts the number of
- * delimited words contained in a string
- * @str: string to be searched
- * @deli: delimiter character
+ * tokens_counter - Counts the number of delimited words
+ *                in a string.
+ * @str: The string to be searched.
+ * @deli: The delimiter character.
  *
- * Return: total counts of words contained within str
+ * Return: The total count of words contained within str.
  */
-int count_tokens(char *str, char *deli)
+
+int tokens_counter(char *str, char *deli)
 {
 	int ind, tokens = 0, leng = 0;
 
@@ -42,7 +44,7 @@ int count_tokens(char *str, char *deli)
 		if (*(str + ind) != *deli)
 		{
 			tokens++;
-			ind += token_len(str + ind, deli);
+			ind += get_token_length(str + ind, deli);
 		}
 	}
 
@@ -50,18 +52,19 @@ int count_tokens(char *str, char *deli)
 }
 
 /**
- * _strtok - function that tokenizes a string
- * @line_read: the string
- * @deli: delimiter character to tokenize the string
+ * _strtok - Splits a string into tokens based on a specified delimiter.
+ * @line_read: The string to be tokenized.
+ * @deli: The delimiter character used to separate the tokens.
  *
- * Return: pointer to array containing tokenized words
+ * Return: A pointer to an array that contains the tokenized words.
  */
+
 char **_strtok(char *line_read, char *deli)
 {
 	char **pointer;
 	int ind = 0, tokens, p, letters, l;
 
-	tokens = count_tokens(line_read, deli);
+	tokens = tokens_counter(line_read, deli);
 	if (tokens == 0)
 		return (NULL);
 
@@ -74,7 +77,7 @@ char **_strtok(char *line_read, char *deli)
 		while (line_read[ind] == *deli)
 			ind++;
 
-		letters = token_len(line_read + ind, deli);
+		letters = get_token_length(line_read + ind, deli);
 
 		pointer[p] = malloc(sizeof(char) * (letters + 1));
 		if (!pointer[p])

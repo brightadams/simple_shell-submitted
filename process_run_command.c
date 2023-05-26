@@ -1,23 +1,24 @@
 #include "main.h"
 
 /**
- * cant_open - when the file doesn't exist or lacks proper permissions, print
- * a cant open err_bool.
+ * open_error_mess - Prints an error message indicating that the file cannot be opened
+ *             when it doesn't exist or lacks proper permissions.
  * @file_path: Path to the supposed file.
  *
- * Return: 127.
+ * Return: The exit code 127.
  */
 
-int cant_open(char *file_path)
+
+int open_error_mess(char *file_path)
 {
 	char *err_bool, *history_string;
 	int leng;
 
-	history_string = _itoa(hist);
+	history_string = stringify(hist);
 	if (!history_string)
 		return (127);
 
-	leng = _strlen(name) + _strlen(history_string) + _strlen(file_path) + 16;
+	leng = _str_len(name) + _str_len(history_string) + _str_len(file_path) + 16;
 	err_bool = malloc(sizeof(char) * (leng + 1));
 	if (!err_bool)
 	{
@@ -25,12 +26,12 @@ int cant_open(char *file_path)
 		return (127);
 	}
 
-	_strcpy(err_bool, name);
-	_strcat(err_bool, ": ");
-	_strcat(err_bool, history_string);
-	_strcat(err_bool, ": Can't open ");
-	_strcat(err_bool, file_path);
-	_strcat(err_bool, "\n");
+	_copy_string(err_bool, name);
+	_string_concat(err_bool, ": ");
+	_string_concat(err_bool, history_string);
+	_string_concat(err_bool, ": Can't open ");
+	_string_concat(err_bool, file_path);
+	_string_concat(err_bool, "\n");
 
 	free(history_string);
 	write(STDERR_FILENO, err_bool, leng);
@@ -39,16 +40,24 @@ int cant_open(char *file_path)
 }
 
 /**
- * proc_file_commands -This Takes a file and attempts to run the commands stored
- * within.
- * @file_path: Path to the file.
- * @exe_ret: Return value of the tail executed command.
+ * file_executor - Takes a file path and attempts to run the commands
+ *                      stored within the file.
  *
- * Return: If file couldn't be opened - 127.
- *	   If malloc fails - -1.
- *	   Otherwise the return value of the tail command ran.
+ * @file_path: Path to the file containing the commands.
+ * @exe_ret: Return value of the last executed command.
+ *
+ * Description: This function reads the specified file and executes the commands
+ * stored within it. Each command is executed in the order they appear
+ * in the file. If the file cannot be opened or accessed due to
+ * insufficient permissions, a "can't open" error message is displayed.
+ *
+ * Return: If the file cannot be opened - 127.
+ *         If memory allocation fails - -1.
+ *         Otherwise, the return value of the last executed command.
  */
-int proc_file_commands(char *file_path, int *exe_ret)
+
+
+int file_executor(char *file_path, int *exe_ret)
 {
 	ssize_t file, b_read, z;
 	unsigned int size_of_line = 0;
@@ -61,7 +70,7 @@ int proc_file_commands(char *file_path, int *exe_ret)
 	file = open(file_path, O_RDONLY);
 	if (file == -1)
 	{
-		*exe_ret = cant_open(file_path);
+		*exe_ret = open_error_mess(file_path);
 		return (*exe_ret);
 	}
 	line_read = malloc(sizeof(char) * size_of_old_line);
@@ -73,8 +82,8 @@ int proc_file_commands(char *file_path, int *exe_ret)
 			return (*exe_ret);
 		buffer[b_read] = '\0';
 		size_of_line += b_read;
-		line_read = _realloc(line_read, size_of_old_line, size_of_line);
-		_strcat(line_read, buffer);
+		line_read = re_allocate(line_read, size_of_old_line, size_of_line);
+		_string_concat(line_read, buffer);
 		size_of_old_line = size_of_line;
 	} while (b_read);
 	for (z = 0; line_read[z] == '\n'; z++)
@@ -89,32 +98,32 @@ int proc_file_commands(char *file_path, int *exe_ret)
 		}
 	}
 	variable_replacement(&line_read, exe_ret);
-	handle_line(&line_read, size_of_line);
+	_line_input(&line_read, size_of_line);
 	args = _strtok(line_read, " ");
 	free(line_read);
 	if (!args)
 		return (0);
-	if (check_args(args) != 0)
+	if (args_checker(args) != 0)
 	{
 		*exe_ret = 2;
-		free_args(args, args);
+		remove_args_from_memory(args, args);
 		return (*exe_ret);
 	}
 	head = args;
 
 	for (z = 0; args[z]; z++)
 	{
-		if (_strncmp(args[z], ";", 1) == 0)
+		if (compare_n_string(args[z], ";", 1) == 0)
 		{
 			free(args[z]);
 			args[z] = NULL;
-			y = call_args(args, head, exe_ret);
+			y = _args_call(args, head, exe_ret);
 			args = &args[++z];
 			z = 0;
 		}
 	}
 
-	y = call_args(args, head, exe_ret);
+	y = _args_call(args, head, exe_ret);
 
 	free(head);
 	return (y);

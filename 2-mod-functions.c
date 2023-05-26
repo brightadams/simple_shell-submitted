@@ -1,14 +1,15 @@
 #include "main.h"
 
 /**
- * _strchr - function that locates a character in a string
- * @string_chars: the string that will be searched
- * @c: the character that will be located
+ * _find_char - Locates the first occurrence of a character in a string.
+ * @string: The string to be searched.
+ * @c: The character to be located.
  *
- * Return: a pointer to the first occurence if c is
- * found or NULL If c is not found
+ * Return: A pointer to the first occurrence of the character if found,
+ *         or NULL if the character is not found.
  */
-char *_strchr(char *string_chars, char c)
+
+char *_find_char(char *string_chars, char c)
 {
 	int ind;
 
@@ -22,14 +23,14 @@ char *_strchr(char *string_chars, char c)
 }
 
 /**
- * _strspn - function that gets the length of a prefix substring
- * @string_chars: the string that will be searched
- * @accept: the prefix that will be measured
+ * _string_prefix_len - Gets the length of a prefix substring.
+ * @string_chars: The string to be searched.
+ * @accept: The prefix to be measured.
  *
- * Return: number of bytes_size in string_chars which consist
- * only of bytes_size from accept
+ * Return: The number of bytes in the string which consist only of bytes from accept.
  */
-int _strspn(char *string_chars, char *accept)
+
+int _string_prefix_len(char *string_chars, char *accept)
 {
 	int bytes_size = 0;
 	int ind;
@@ -50,14 +51,16 @@ int _strspn(char *string_chars, char *accept)
 }
 
 /**
- * _strcmp - function that compares two strings
- * @string1_pointer: the first string
- * @string2_pointer: the second string
+ * compare_string - Compares two strings.
+ * @string1_pointer: The first string.
+ * @string2_pointer: The second string.
  *
- * Return: positive byte difference if string1_pointer > string2_pointer, 0 if string1_pointer = string2_pointer
- * and negative byte difference if string1_pointer < string2_pointer
+ * Return: A positive byte difference if string1_pointer is greater than string2_pointer,
+ *         0 if string1_pointer is equal to string2_pointer,
+ *         and a negative byte difference if string1_pointer is less than string2_pointer.
  */
-int _strcmp(char *string1_pointer, char *string2_pointer)
+
+int compare_string(char *string1_pointer, char *string2_pointer)
 {
 	while (*string1_pointer && *string2_pointer && *string1_pointer == *string2_pointer)
 	{
@@ -72,15 +75,17 @@ int _strcmp(char *string1_pointer, char *string2_pointer)
 }
 
 /**
- * _strncmp - function that compare two strings
- * @string1_pointer: first pointer to a string
- * @string2_pointer: second pointer to a string
- * @n: The first n bytes_size of the strings to to be compared
+ * compare_n_string - Compares two strings.
+ * @string1_pointer: The first string.
+ * @string2_pointer: The second string.
+ * @n: The number of bytes to compare.
  *
- * Return: less than 0 if string1_pointer is shorter than string2_pointer,
- * greater than 0 is string1_pointer is longer than string2_pointer and 0 if they match
+ * Return: A value less than 0 if string1_pointer is shorter than string2_pointer,
+ *         a value greater than 0 if string1_pointer is longer than string2_pointer,
+ *         and 0 if the first n bytes of string1_pointer and string2_pointer match.
  */
-int _strncmp(const char *string1_pointer, const char *string2_pointer, size_t n)
+
+int compare_n_string(const char *string1_pointer, const char *string2_pointer, size_t n)
 {
 	size_t z;
 

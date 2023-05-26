@@ -1,22 +1,22 @@
 #include "main.h"
 
 /**
- * error_126 - function that Creates an err_bool
- * message for permission denied failures
- * @args: array of arguments passed
+ * _perm_errors - Generates an error message for permission denied failures.
+ * @args: arguments array
  *
- * Return: Error string
+ * Return: error message of string
  */
-char *error_126(char **args)
+
+char *_perm_errors(char **args)
 {
 	char *err_bool, *history_string;
 	int leng;
 
-	history_string = _itoa(hist);
+	history_string = stringify(hist);
 	if (!history_string)
 		return (NULL);
 
-	leng = _strlen(name) + _strlen(history_string) + _strlen(args[0]) + 24;
+	leng = _str_len(name) + _str_len(history_string) + _str_len(args[0]) + 24;
 	err_bool = malloc(sizeof(char) * (leng + 1));
 	if (!err_bool)
 	{
@@ -24,34 +24,34 @@ char *error_126(char **args)
 		return (NULL);
 	}
 
-	_strcpy(err_bool, name);
-	_strcat(err_bool, ": ");
-	_strcat(err_bool, history_string);
-	_strcat(err_bool, ": ");
-	_strcat(err_bool, args[0]);
-	_strcat(err_bool, ": Permission denied\n");
+	_copy_string(err_bool, name);
+	_string_concat(err_bool, ": ");
+	_string_concat(err_bool, history_string);
+	_string_concat(err_bool, ": ");
+	_string_concat(err_bool, args[0]);
+	_string_concat(err_bool, ": Permission denied\n");
 
 	free(history_string);
 	return (err_bool);
 }
 
 /**
- * error_127 - function that creates an err_bool
- * message for command not found failures
- * @args: array of arguments passed
+ * not_found_errors - Generates an error message for command not found failures.
+ * @args: arguments array
  *
- * Return: err_bool string
+ * Return: error message of string
  */
-char *error_127(char **args)
+
+char *not_found_errors(char **args)
 {
 	char *err_bool, *history_string;
 	int leng;
 
-	history_string = _itoa(hist);
+	history_string = stringify(hist);
 	if (!history_string)
 		return (NULL);
 
-	leng = _strlen(name) + _strlen(history_string) + _strlen(args[0]) + 16;
+	leng = _str_len(name) + _str_len(history_string) + _str_len(args[0]) + 16;
 	err_bool = malloc(sizeof(char) * (leng + 1));
 	if (!err_bool)
 	{
@@ -59,12 +59,12 @@ char *error_127(char **args)
 		return (NULL);
 	}
 
-	_strcpy(err_bool, name);
-	_strcat(err_bool, ": ");
-	_strcat(err_bool, history_string);
-	_strcat(err_bool, ": ");
-	_strcat(err_bool, args[0]);
-	_strcat(err_bool, ": not found\n");
+	_copy_string(err_bool, name);
+	_string_concat(err_bool, ": ");
+	_string_concat(err_bool, history_string);
+	_string_concat(err_bool, ": ");
+	_string_concat(err_bool, args[0]);
+	_string_concat(err_bool, ": not found\n");
 
 	free(history_string);
 	return (err_bool);

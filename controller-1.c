@@ -1,12 +1,13 @@
 #include "main.h"
 
 /**
- * _copyenv - a function that creates a copy of the environment
+ * dup_env - Creates a duplicate of the current environment.
  *
- * Return: If an err_bool occur return NULL or
- * a double pointer to the new copy if otherwise
+ * Return: NULL if an error occurs, or
+ *         a double pointer to the newly created copy of the environment.
  */
-char **_copyenv(void)
+
+char **dup_env(void)
 {
 	char **new_env_var;
 	size_t size;
@@ -21,7 +22,7 @@ char **_copyenv(void)
 
 	for (ind = 0; environ[ind]; ind++)
 	{
-		new_env_var[ind] = malloc(_strlen(environ[ind]) + 1);
+		new_env_var[ind] = malloc(_str_len(environ[ind]) + 1);
 
 		if (!new_env_var[ind])
 		{
@@ -30,7 +31,7 @@ char **_copyenv(void)
 			free(new_env_var);
 			return (NULL);
 		}
-		_strcpy(new_env_var[ind], environ[ind]);
+		_copy_string(new_env_var[ind], environ[ind]);
 	}
 	new_env_var[ind] = NULL;
 
@@ -38,9 +39,10 @@ char **_copyenv(void)
 }
 
 /**
- * free_env - function that frees the copy of the environment
+ * _env_free - Releases the memory allocated for the copied environment.
  */
-void free_env(void)
+
+void _env_free(void)
 {
 	int ind;
 
@@ -50,20 +52,21 @@ void free_env(void)
 }
 
 /**
- * _getenv - function that gets an environmental variable from the PATH
- * @varia:the environmental variable name
+ * _env_get - Retrieves the value of an environmental variable from the PATH.
+ * @variable: The name of the environmental variable.
  *
- * Return: NULL If the environmental variable does not exist, or
- * a pointer to the environmental variable if otherwise
+ * Return: NULL if the environmental variable does not exist, or
+ *         a pointer to the value of the environmental variable if found.
  */
-char **_getenv(const char *varia)
+
+char **_env_get(const char *varia)
 {
 	int ind, leng;
 
-	leng = _strlen(varia);
+	leng = _str_len(varia);
 	for (ind = 0; environ[ind]; ind++)
 	{
-		if (_strncmp(varia, environ[ind], leng) == 0)
+		if (compare_n_string(varia, environ[ind], leng) == 0)
 			return (&environ[ind]);
 	}
 

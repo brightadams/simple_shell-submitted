@@ -1,17 +1,17 @@
 #include "main.h"
 
 /**
- * shellby_env -This Prints the curr environment.
- * @args:This passes An array of arguments passed to the shell.
- * @head: A double pointer to the initial of args.
+ * _curr_env - Prints the current environment.
+ * @args: An array of arguments passed to the shell.
+ * @head: A double pointer to the initial element of args.
  *
- * Return: If an err_bool occurs - -1.
- *	   Otherwise - 0.
+ * Return: If an error occurs - -1.
+ *         Otherwise - 0.
  *
- * Description:This Prints one variable per line_read in the
- *              format 'variable'='value'.
+ * Description: Prints each variable in the format 'variable'='value'.
  */
-int shellby_env(char **args, char __attribute__((__unused__)) **head)
+
+int _curr_env(char **args, char __attribute__((__unused__)) **head)
 {
 	int ind;
 	char new_line = '\n';
@@ -21,7 +21,7 @@ int shellby_env(char **args, char __attribute__((__unused__)) **head)
 
 	for (ind = 0; environ[ind]; ind++)
 	{
-		write(STDOUT_FILENO, environ[ind], _strlen(environ[ind]));
+		write(STDOUT_FILENO, environ[ind], _str_len(environ[ind]));
 		write(STDOUT_FILENO, &new_line, 1);
 	}
 
@@ -30,32 +30,34 @@ int shellby_env(char **args, char __attribute__((__unused__)) **head)
 }
 
 /**
- * shellby_setenv - This Changes or adds an environmental variable to the PATH.
+ * _modify_env - Modifies or adds an environmental variable to the PATH.
  * @args: An array of arguments passed to the shell.
- * @head: A double pointer to the initial of args.
- * Description: args[1] is the name of the new or existing PATH variable.
- *              args[2] is the value to set the new or changed variable to.
+ * @head: A double pointer to the initial element of args.
  *
- * Return: If an err_bool occurs - -1.
- *         Otherwise - 0.
+ * Description: The function takes the name of a new or existing PATH variable
+ *              from args[1], and assigns the value specified in args[2] to it.
+ *
+ * Return: If an error occurs, the function returns -1.
+ *         Otherwise, it returns 0.
  */
-int shellby_setenv(char **args, char __attribute__((__unused__)) **head)
+
+int _modify_env(char **args, char __attribute__((__unused__)) **head)
 {
 	char **e_variable = NULL, **new_env_var, *new_val;
 	size_t size;
 	int ind;
 
 	if (!args[0] || !args[1])
-		return (create_error(args, -1));
+		return (error_creator(args, -1));
 
-	new_val = malloc(_strlen(args[0]) + 1 + _strlen(args[1]) + 1);
+	new_val = malloc(_str_len(args[0]) + 1 + _str_len(args[1]) + 1);
 	if (!new_val)
-		return (create_error(args, -1));
-	_strcpy(new_val, args[0]);
-	_strcat(new_val, "=");
-	_strcat(new_val, args[1]);
+		return (error_creator(args, -1));
+	_copy_string(new_val, args[0]);
+	_string_concat(new_val, "=");
+	_string_concat(new_val, args[1]);
 
-	e_variable = _getenv(args[0]);
+	e_variable = _env_get(args[0]);
 	if (e_variable)
 	{
 		free(*e_variable);
@@ -69,7 +71,7 @@ int shellby_setenv(char **args, char __attribute__((__unused__)) **head)
 	if (!new_env_var)
 	{
 		free(new_val);
-		return (create_error(args, -1));
+		return (error_creator(args, -1));
 	}
 
 	for (ind = 0; environ[ind]; ind++)
@@ -84,23 +86,26 @@ int shellby_setenv(char **args, char __attribute__((__unused__)) **head)
 }
 
 /**
- * shellby_unsetenv - Deletes an environmental variable from the PATH.
+ * _remove_env - Removes an environmental variable from the PATH.
  * @args: An array of arguments passed to the shell.
- * @head: A double pointer to the initial of args.
- * Description: args[1] is the PATH variable to remove.
+ * @head: A double pointer to the initial element of args.
  *
- * Return: If an err_bool occurs - -1.
- *         Otherwise - 0.
+ * Description: The function deletes the specified PATH variable from the environment.
+ *              The variable to remove is specified in args[1].
+ *
+ * Return: If an error occurs, the function returns -1.
+ *         Otherwise, it returns 0.
  */
-int shellby_unsetenv(char **args, char __attribute__((__unused__)) **head)
+
+int _remove_env(char **args, char __attribute__((__unused__)) **head)
 {
 	char **e_variable, **new_env_var;
 	size_t size;
 	int ind, index2;
 
 	if (!args[0])
-		return (create_error(args, -1));
-	e_variable = _getenv(args[0]);
+		return (error_creator(args, -1));
+	e_variable = _env_get(args[0]);
 	if (!e_variable)
 		return (0);
 
@@ -109,7 +114,7 @@ int shellby_unsetenv(char **args, char __attribute__((__unused__)) **head)
 
 	new_env_var = malloc(sizeof(char *) * size);
 	if (!new_env_var)
-		return (create_error(args, -1));
+		return (error_creator(args, -1));
 
 	for (ind = 0, index2 = 0; environ[ind]; ind++)
 	{

@@ -1,21 +1,22 @@
 #include "main.h"
 
 /**
- * handle_line - Partitions a line_read read from standard input as needed.
- * @line_read: A pointer to a line_read read from standard input.
- * @read: The length of line_read.
+ * _line_input - Splits a line read from standard input into separate commands.
+ * @line_read: A pointer to the line read from standard input.
+ * @read: The length of the line read.
  *
- * Description: Spaces are inserted to separate ";", "||", and "&&".
- *              Replaces "#" with '\0'.
+ * Description: Inserts spaces to separate commands based on delimiters like
+ *              ";", "||", and "&&". Replaces "#" with '\0' to ignore comments.
  */
-void handle_line(char **line_read, ssize_t read)
+
+void _line_input(char **line_read, ssize_t read)
 {
 	char *old_line, *n_line;
 	char prev, curr, next;
 	size_t z, g;
 	ssize_t n_length;
 
-	n_length = get_new_len(*line_read);
+	n_length = _new_line(*line_read);
 	if (n_length == read - 1)
 		return;
 	n_line = malloc(n_length + 1);
@@ -92,16 +93,17 @@ void handle_line(char **line_read, ssize_t read)
 }
 
 /**
- * get_new_len - Gets the new length of a line_read partitioned
- *               by ";", "||", "&&&", or "#".
- * @line_read: The line_read to check.
+ * _new_line - Calculates the new length of a line after partitioning
+ *               it by delimiters such as ";", "||", "&&", or "#".
+ * @line_read: The line to check.
  *
- * Return: The new length of the line_read.
+ * Return: The new length of the line.
  *
- * Description: Cuts short lines containing '#' comments with '\0'.
+ * Description: Truncates lines containing '#' comments by replacing '#' with '\0'.
  */
 
-ssize_t get_new_len(char *line_read)
+
+ssize_t _new_line(char *line_read)
 {
 	size_t z;
 	ssize_t n_length = 0;
@@ -139,7 +141,7 @@ ssize_t get_new_len(char *line_read)
 					n_length++;
 			}
 			else
-				logical_ops(&line_read[z], &n_length);
+				_operators_logical(&line_read[z], &n_length);
 		}
 		else if (curr == ';')
 		{
@@ -153,11 +155,12 @@ ssize_t get_new_len(char *line_read)
 	return (n_length);
 }
 /**
- * logical_ops - Checks a line_read for logical operators "||" or "&&".
- * @line_read: A pointer to the character to check in the line_read.
- * @n_length: Pointer to n_length in get_new_len function.
+ * _operators_logical - Checks a line for logical operators "||" or "&&".
+ * @line_read: points to the character to check in the line_read.
+ * @n_length: points to the new length of the line_read in _new_line function.
  */
-void logical_ops(char *line_read, ssize_t *n_length)
+
+void _operators_logical(char *line_read, ssize_t *n_length)
 {
 	char prev, curr, next;
 

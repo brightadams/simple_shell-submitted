@@ -1,14 +1,14 @@
 #include "main.h"
 
 /**
- * get_args - function that gets a command from standard input
- * @line_read: buffer to store the command
- * @exe_ret: return value of tail command executed
+ * _args_get - Reads a command from standard input and stores it in a buffer.
+ * @line_read: The buffer to store the command.
+ * @exe_ret: The return value of the executed tail command.
  *
- * Return: NULL if an err_bool occurs or, a pointer
- * to the stored command if otherwise
+ * Return: NULL if an error occurs, or a pointer to the stored command otherwise.
  */
-char *get_args(char *line_read, int *exe_ret)
+
+char *_args_get(char *line_read, int *exe_ret)
 {
 	size_t n = 0;
 	ssize_t read;
@@ -17,7 +17,7 @@ char *get_args(char *line_read, int *exe_ret)
 	if (line_read)
 		free(line_read);
 
-	read = _getline(&line_read, &n, STDIN_FILENO);
+	read = line_getter(&line_read, &n, STDIN_FILENO);
 	if (read == -1)
 		return (NULL);
 	if (read == 1)
@@ -25,25 +25,26 @@ char *get_args(char *line_read, int *exe_ret)
 		hist++;
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, prompter, 2);
-		return (get_args(line_read, exe_ret));
+		return (_args_get(line_read, exe_ret));
 	}
 
 	line_read[read - 1] = '\0';
 	variable_replacement(&line_read, exe_ret);
-	handle_line(&line_read, read);
+	_line_input(&line_read, read);
 
 	return (line_read);
 }
 
 /**
- * call_args - function that partitions operators from commands
- * @args: array of arguments
- * @head: double pointer to initial of args
- * @exe_ret: return value of parent process tail executed command
+ * _args_call - Separates operators from commands in an array of arguments.
+ * @args: The array of arguments.
+ * @head: Double pointer to the initial element of args.
+ * @exe_ret: The return value of the parent process tail executed command.
  *
- * Return: return value of the tail executed command
+ * Return: The return value of the executed tail command.
  */
-int call_args(char **args, char **head, int *exe_ret)
+
+int _args_call(char **args, char **head, int *exe_ret)
 {
 	int y, ind;
 
@@ -51,12 +52,12 @@ int call_args(char **args, char **head, int *exe_ret)
 		return (*exe_ret);
 	for (ind = 0; args[ind]; ind++)
 	{
-		if (_strncmp(args[ind], "||", 2) == 0)
+		if (compare_n_string(args[ind], "||", 2) == 0)
 		{
 			free(args[ind]);
 			args[ind] = NULL;
 			args = replace_aliases(args);
-			y = run_args(args, head, exe_ret);
+			y = exec_args(args, head, exe_ret);
 			if (*exe_ret != 0)
 			{
 				args = &args[++ind];
@@ -69,12 +70,12 @@ int call_args(char **args, char **head, int *exe_ret)
 				return (y);
 			}
 		}
-		else if (_strncmp(args[ind], "&&", 2) == 0)
+		else if (compare_n_string(args[ind], "&&", 2) == 0)
 		{
 			free(args[ind]);
 			args[ind] = NULL;
 			args = replace_aliases(args);
-			y = run_args(args, head, exe_ret);
+			y = exec_args(args, head, exe_ret);
 			if (*exe_ret == 0)
 			{
 				args = &args[++ind];
@@ -89,19 +90,20 @@ int call_args(char **args, char **head, int *exe_ret)
 		}
 	}
 	args = replace_aliases(args);
-	y = run_args(args, head, exe_ret);
+	y = exec_args(args, head, exe_ret);
 	return (y);
 }
 
 /**
- * run_args - function that calls the execution of a command
- * @args: array of arguments
- * @head: double pointer to initial of args
- * @exe_ret: return value of parent process tail executed command
+ * exec_args - Executes a command specified by an array of arguments.
+ * @args: The array of arguments.
+ * @head: Double pointer to the initial element of args.
+ * @exe_ret: The return value of the parent process tail executed command.
  *
- * Return: return value of the tail executed command
+ * Return: The return value of the executed command.
  */
-int run_args(char **args, char **head, int *exe_ret)
+
+int exec_args(char **args, char **head, int *exe_ret)
 {
 	int y, z;
 	int (*builtin)(char **args, char **head);
@@ -129,21 +131,20 @@ int run_args(char **args, char **head, int *exe_ret)
 }
 
 /**
- * handle_args - function that gets, calls, and
- * runs the execution of command
- * @exe_ret: return value of the parent process
- * tail executed command
+ * _args_handler - Processes, calls, and executes a command.
+ * @exe_ret: The return value of the parent process tail executed command.
  *
- * Return: END_OF_FILE (-2) if an end-of-file is read
- * and -1 If the input cannot be tokenized or the
- * exit value of the tail executed command if otherwise
+ * Return: END_OF_FILE (-2) if an end-of-file is encountered,
+ *         -1 if the input cannot be tokenized,
+ *         or the exit value of the executed command otherwise.
  */
-int handle_args(int *exe_ret)
+
+int _args_handler(int *exe_ret)
 {
 	int y = 0, ind;
 	char **args, *line_read = NULL, **head;
 
-	line_read = get_args(line_read, exe_ret);
+	line_read = _args_get(line_read, exe_ret);
 	if (!line_read)
 		return (END_OF_FILE);
 
@@ -151,41 +152,41 @@ int handle_args(int *exe_ret)
 	free(line_read);
 	if (!args)
 		return (y);
-	if (check_args(args) != 0)
+	if (args_checker(args) != 0)
 	{
 		*exe_ret = 2;
-		free_args(args, args);
+		remove_args_from_memory(args, args);
 		return (*exe_ret);
 	}
 	head = args;
 
 	for (ind = 0; args[ind]; ind++)
 	{
-		if (_strncmp(args[ind], ";", 1) == 0)
+		if (compare_n_string(args[ind], ";", 1) == 0)
 		{
 			free(args[ind]);
 			args[ind] = NULL;
-			y = call_args(args, head, exe_ret);
+			y = _args_call(args, head, exe_ret);
 			args = &args[++ind];
 			ind = 0;
 		}
 	}
 	if (args)
-		y = call_args(args, head, exe_ret);
+		y = _args_call(args, head, exe_ret);
 
 	free(head);
 	return (y);
 }
 
 /**
- * check_args - function that checks if there are
- * any leading ';', ';;', '&&', or '||'
- * @args: 2D pointer to tokenized commands and arguments
+ * args_checker - Verifies if there are any leading ';', ';;', '&&', or '||' tokens.
+ * @args: tokenized commands and arguments of the 2D pointer
  *
- * Return: 2 if a ';', '&&', or '||' is placed at an
- * invalid position or  0 if Otherwise
+ * Return: 2 if a ';', '&&', or '||' token is found at an invalid position,
+ *         or 0 otherwise.
  */
-int check_args(char **args)
+
+int args_checker(char **args)
 {
 	size_t z;
 	char *current, *nex;
@@ -196,10 +197,10 @@ int check_args(char **args)
 		if (current[0] == ';' || current[0] == '&' || current[0] == '|')
 		{
 			if (z == 0 || current[1] == ';')
-				return (create_error(&args[z], 2));
+				return (error_creator(&args[z], 2));
 			nex = args[z + 1];
 			if (nex && (nex[0] == ';' || nex[0] == '&' || nex[0] == '|'))
-				return (create_error(&args[z + 1], 2));
+				return (error_creator(&args[z + 1], 2));
 		}
 	}
 	return (0);

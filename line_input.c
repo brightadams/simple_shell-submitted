@@ -1,17 +1,22 @@
 #include "main.h"
 
 /**
- * _realloc - function that reallocates a memory
- * block using malloc and free
- * @pointer: pointer to previously allocated memory
- * @size_of_old_line: size in bytes_size of allocated space for pointer
- * @new_size: size in bytes_size for new memory block
+ * re_allocate - Reallocates a memory block using malloc and free.
+ * @pointer: Pointer to the previously allocated memory.
+ * @size_of_old_line: Size in bytes of the allocated space for ptr.
+ * @new_size: Size in bytes for the new memory block.
  *
- * Return: pointer if new_size == size_of_old_line, NULL
- * if new_size == 0 and pointer is not NULL and
- * a pointer to reallocated memory block if otherwise
+ * Description: This function resizes the memory block pointed to by ptr to new_size bytes.
+ *              If new_size is equal to old_size, the original block is returned.
+ *              If new_size is 0 and ptr is not NULL, the block is freed and NULL is returned.
+ *              If the allocation fails, NULL is returned.
+ *
+ * Return: Pointer if new_size is equal to old_size,
+ *         NULL if new_size is 0 and ptr is not NULL,
+ *         and a pointer to the reallocated memory block otherwise.
  */
-void *_realloc(void *pointer, unsigned int size_of_old_line, unsigned int new_size)
+
+void *re_allocate(void *pointer, unsigned int size_of_old_line, unsigned int new_size)
 {
 	void *memo;
 	char *copied_pointer, *fill;
@@ -53,14 +58,17 @@ void *_realloc(void *pointer, unsigned int size_of_old_line, unsigned int new_si
 }
 
 /**
- * assign_lineptr - function that reassigns the linePtr
- * variable for _getline
- * @linePtr: a buffer to store input string
- * @n: size of linePtr
- * @buffer: string to assign to the linePtr
- * @b: buffer size
+ * line_pointer - Reassigns the linePtr variable for line_getter.
+ * @linePtr: Pointer to the buffer to store the input string.
+ * @n: Size of linePtr.
+ * @buffer: String to assign to the linePtr.
+ * @b: Buffer size.
+ *
+ * Description: This function updates the linePtr and n variables used in line_getter
+ *              with the provided buffer and buffer size.
  */
-void assign_lineptr(char **linePtr, size_t *n, char *buffer, size_t b)
+
+void line_pointer(char **linePtr, size_t *n, char *buffer, size_t b)
 {
 	if (*linePtr == NULL)
 	{
@@ -80,20 +88,26 @@ void assign_lineptr(char **linePtr, size_t *n, char *buffer, size_t b)
 	}
 	else
 	{
-		_strcpy(*linePtr, buffer);
+		_copy_string(*linePtr, buffer);
 		free(buffer);
 	}
 }
 
 /**
- * _getline - function that reads input from a stream
- * @linePtr: buffer to store input
- * @n: The size of linePtr
- * @stream: stream to read from
+ * read_input - Reads input from a stream and stores it in a buffer.
+ * @linePtr: Buffer to store the input.
+ * @n: The size of the buffer.
+ * @stream: Stream to read from.
  *
- * Return: number of bytes_size read
+ * Description: This function reads input from the specified stream and stores it in the provided buffer.
+ *              It reads up to n-1 bytes from the stream and adds a null terminator at the end of the input.
+ *              The buffer should be large enough to hold the input, including the null terminator.
+ *
+ * Return: The number of bytes read from the stream. If an error occurs or the end of the stream is reached,
+ *         it returns -1.
  */
-ssize_t _getline(char **linePtr, size_t *n, FILE *stream)
+
+ssize_t line_getter(char **linePtr, size_t *n, FILE *stream)
 {
 	static ssize_t input;
 	ssize_t y;
@@ -125,14 +139,14 @@ ssize_t _getline(char **linePtr, size_t *n, FILE *stream)
 		}
 
 		if (input >= 120)
-			buffer = _realloc(buffer, input, input + 1);
+			buffer = re_allocate(buffer, input, input + 1);
 
 		buffer[input] = c;
 		input++;
 	}
 	buffer[input] = '\0';
 
-	assign_lineptr(linePtr, n, buffer, input);
+	line_pointer(linePtr, n, buffer, input);
 
 	y = input;
 	if (e != 0)
