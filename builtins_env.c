@@ -1,28 +1,28 @@
 #include "main.h"
 
 /**
- * shellby_env -This Prints the current environment.
+ * shellby_env -This Prints the curr environment.
  * @args:This passes An array of arguments passed to the shell.
  * @head: A double pointer to the initial of args.
  *
  * Return: If an err_bool occurs - -1.
  *	   Otherwise - 0.
  *
- * Description:This Prints one variable per line in the
+ * Description:This Prints one variable per line_read in the
  *              format 'variable'='value'.
  */
 int shellby_env(char **args, char __attribute__((__unused__)) **head)
 {
-	int index;
-	char nc = '\n';
+	int ind;
+	char new_line = '\n';
 
 	if (!environ)
 		return (-1);
 
-	for (index = 0; environ[index]; index++)
+	for (ind = 0; environ[ind]; ind++)
 	{
-		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
-		write(STDOUT_FILENO, &nc, 1);
+		write(STDOUT_FILENO, environ[ind], _strlen(environ[ind]));
+		write(STDOUT_FILENO, &new_line, 1);
 	}
 
 	(void)args;
@@ -41,44 +41,44 @@ int shellby_env(char **args, char __attribute__((__unused__)) **head)
  */
 int shellby_setenv(char **args, char __attribute__((__unused__)) **head)
 {
-	char **env_var = NULL, **new_environ, *value_new;
+	char **e_variable = NULL, **new_env_var, *new_val;
 	size_t size;
-	int index;
+	int ind;
 
 	if (!args[0] || !args[1])
 		return (create_error(args, -1));
 
-	value_new = malloc(_strlen(args[0]) + 1 + _strlen(args[1]) + 1);
-	if (!value_new)
+	new_val = malloc(_strlen(args[0]) + 1 + _strlen(args[1]) + 1);
+	if (!new_val)
 		return (create_error(args, -1));
-	_strcpy(value_new, args[0]);
-	_strcat(value_new, "=");
-	_strcat(value_new, args[1]);
+	_strcpy(new_val, args[0]);
+	_strcat(new_val, "=");
+	_strcat(new_val, args[1]);
 
-	env_var = _getenv(args[0]);
-	if (env_var)
+	e_variable = _getenv(args[0]);
+	if (e_variable)
 	{
-		free(*env_var);
-		*env_var = value_new;
+		free(*e_variable);
+		*e_variable = new_val;
 		return (0);
 	}
 	for (size = 0; environ[size]; size++)
 		;
 
-	new_environ = malloc(sizeof(char *) * (size + 2));
-	if (!new_environ)
+	new_env_var = malloc(sizeof(char *) * (size + 2));
+	if (!new_env_var)
 	{
-		free(value_new);
+		free(new_val);
 		return (create_error(args, -1));
 	}
 
-	for (index = 0; environ[index]; index++)
-		new_environ[index] = environ[index];
+	for (ind = 0; environ[ind]; ind++)
+		new_env_var[ind] = environ[ind];
 
 	free(environ);
-	environ = new_environ;
-	environ[index] = value_new;
-	environ[index + 1] = NULL;
+	environ = new_env_var;
+	environ[ind] = new_val;
+	environ[ind + 1] = NULL;
 
 	return (0);
 }
@@ -94,35 +94,35 @@ int shellby_setenv(char **args, char __attribute__((__unused__)) **head)
  */
 int shellby_unsetenv(char **args, char __attribute__((__unused__)) **head)
 {
-	char **env_var, **new_environ;
+	char **e_variable, **new_env_var;
 	size_t size;
-	int index, index2;
+	int ind, index2;
 
 	if (!args[0])
 		return (create_error(args, -1));
-	env_var = _getenv(args[0]);
-	if (!env_var)
+	e_variable = _getenv(args[0]);
+	if (!e_variable)
 		return (0);
 
 	for (size = 0; environ[size]; size++)
 		;
 
-	new_environ = malloc(sizeof(char *) * size);
-	if (!new_environ)
+	new_env_var = malloc(sizeof(char *) * size);
+	if (!new_env_var)
 		return (create_error(args, -1));
 
-	for (index = 0, index2 = 0; environ[index]; index++)
+	for (ind = 0, index2 = 0; environ[ind]; ind++)
 	{
-		if (*env_var == environ[index])
+		if (*e_variable == environ[ind])
 		{
-			free(*env_var);
+			free(*e_variable);
 			continue;
 		}
-		new_environ[index2] = environ[index];
+		new_env_var[index2] = environ[ind];
 		index2++;
 	}
 	free(environ);
-	environ = new_environ;
+	environ = new_env_var;
 	environ[size - 1] = NULL;
 
 	return (0);

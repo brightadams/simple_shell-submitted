@@ -3,72 +3,72 @@
 /**
  * _realloc - function that reallocates a memory
  * block using malloc and free
- * @ptr: pointer to previously allocated memory
- * @old_size: size in bytes of allocated space for ptr
- * @new_size: size in bytes for new memory block
+ * @pointer: pointer to previously allocated memory
+ * @size_of_old_line: size in bytes_size of allocated space for pointer
+ * @new_size: size in bytes_size for new memory block
  *
- * Return: ptr if new_size == old_size, NULL
- * if new_size == 0 and ptr is not NULL and
+ * Return: pointer if new_size == size_of_old_line, NULL
+ * if new_size == 0 and pointer is not NULL and
  * a pointer to reallocated memory block if otherwise
  */
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+void *_realloc(void *pointer, unsigned int size_of_old_line, unsigned int new_size)
 {
-	void *mem;
-	char *ptr_copy, *filler;
-	unsigned int index;
+	void *memo;
+	char *copied_pointer, *fill;
+	unsigned int ind;
 
-	if (new_size == old_size)
-		return (ptr);
+	if (new_size == size_of_old_line)
+		return (pointer);
 
-	if (ptr == NULL)
+	if (pointer == NULL)
 	{
-		mem = malloc(new_size);
-		if (mem == NULL)
+		memo = malloc(new_size);
+		if (memo == NULL)
 			return (NULL);
 
-		return (mem);
+		return (memo);
 	}
 
-	if (new_size == 0 && ptr != NULL)
+	if (new_size == 0 && pointer != NULL)
 	{
-		free(ptr);
+		free(pointer);
 		return (NULL);
 	}
 
-	ptr_copy = ptr;
-	mem = malloc(sizeof(*ptr_copy) * new_size);
-	if (mem == NULL)
+	copied_pointer = pointer;
+	memo = malloc(sizeof(*copied_pointer) * new_size);
+	if (memo == NULL)
 	{
-		free(ptr);
+		free(pointer);
 		return (NULL);
 	}
 
-	filler = mem;
+	fill = memo;
 
-	for (index = 0; index < old_size && index < new_size; index++)
-		filler[index] = *ptr_copy++;
+	for (ind = 0; ind < size_of_old_line && ind < new_size; ind++)
+		fill[ind] = *copied_pointer++;
 
-	free(ptr);
-	return (mem);
+	free(pointer);
+	return (memo);
 }
 
 /**
- * assign_lineptr - function that reassigns the lineptr
+ * assign_lineptr - function that reassigns the linePtr
  * variable for _getline
- * @lineptr: a buffer to store input string
- * @n: size of lineptr
- * @buffer: string to assign to the lineptr
+ * @linePtr: a buffer to store input string
+ * @n: size of linePtr
+ * @buffer: string to assign to the linePtr
  * @b: buffer size
  */
-void assign_lineptr(char **lineptr, size_t *n, char *buffer, size_t b)
+void assign_lineptr(char **linePtr, size_t *n, char *buffer, size_t b)
 {
-	if (*lineptr == NULL)
+	if (*linePtr == NULL)
 	{
 		if (b > 120)
 			*n = b;
 		else
 			*n = 120;
-		*lineptr = buffer;
+		*linePtr = buffer;
 	}
 	else if (*n < b)
 	{
@@ -76,24 +76,24 @@ void assign_lineptr(char **lineptr, size_t *n, char *buffer, size_t b)
 			*n = b;
 		else
 			*n = 120;
-		*lineptr = buffer;
+		*linePtr = buffer;
 	}
 	else
 	{
-		_strcpy(*lineptr, buffer);
+		_strcpy(*linePtr, buffer);
 		free(buffer);
 	}
 }
 
 /**
  * _getline - function that reads input from a stream
- * @lineptr: buffer to store input
- * @n: The size of lineptr
+ * @linePtr: buffer to store input
+ * @n: The size of linePtr
  * @stream: stream to read from
  *
- * Return: number of bytes read
+ * Return: number of bytes_size read
  */
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
+ssize_t _getline(char **linePtr, size_t *n, FILE *stream)
 {
 	static ssize_t input;
 	ssize_t y;
@@ -132,7 +132,7 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 	}
 	buffer[input] = '\0';
 
-	assign_lineptr(lineptr, n, buffer, input);
+	assign_lineptr(linePtr, n, buffer, input);
 
 	y = input;
 	if (e != 0)

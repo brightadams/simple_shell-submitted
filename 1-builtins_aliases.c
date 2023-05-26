@@ -58,32 +58,32 @@ void set_alias(char *variable_name, char *value)
 {
 	alias_t *tem = aliases;
 	int leng, g, p;
-	char *value_new;
+	char *new_val;
 
 	*value = '\0';
 	value++;
 	leng = _strlen(value) - _strspn(value, "'\"");
-	value_new = malloc(sizeof(char) * (leng + 1));
-	if (!value_new)
+	new_val = malloc(sizeof(char) * (leng + 1));
+	if (!new_val)
 		return;
 	for (g = 0, p = 0; value[g]; g++)
 	{
 		if (value[g] != '\'' && value[g] != '"')
-			value_new[p++] = value[g];
+			new_val[p++] = value[g];
 	}
-	value_new[p] = '\0';
+	new_val[p] = '\0';
 	while (tem)
 	{
 		if (_strcmp(variable_name, tem->name) == 0)
 		{
 			free(tem->value);
-			tem->value = value_new;
+			tem->value = new_val;
 			break;
 		}
 		tem = tem->next;
 	}
 	if (!tem)
-		add_alias_end(&aliases, variable_name, value_new);
+		add_alias_end(&aliases, variable_name, new_val);
 }
 
 /**
@@ -117,7 +117,7 @@ char **replace_aliases(char **args)
 {
 	alias_t *tem;
 	int z;
-	char *value_new;
+	char *new_val;
 
 	if (_strcmp(args[0], "alias") == 0)
 		return (args);
@@ -128,15 +128,15 @@ char **replace_aliases(char **args)
 		{
 			if (_strcmp(args[z], tem->name) == 0)
 			{
-				value_new = malloc(sizeof(char) * (_strlen(tem->value) + 1));
-				if (!value_new)
+				new_val = malloc(sizeof(char) * (_strlen(tem->value) + 1));
+				if (!new_val)
 				{
 					free_args(args, args);
 					return (NULL);
 				}
-				_strcpy(value_new, tem->value);
+				_strcpy(new_val, tem->value);
 				free(args[z]);
-				args[z] = value_new;
+				args[z] = new_val;
 				z--;
 				break;
 			}

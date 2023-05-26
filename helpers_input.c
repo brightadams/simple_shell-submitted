@@ -2,37 +2,37 @@
 
 /**
  * get_args - function that gets a command from standard input
- * @line: buffer to store the command
+ * @line_read: buffer to store the command
  * @exe_ret: return value of tail command executed
  *
  * Return: NULL if an err_bool occurs or, a pointer
  * to the stored command if otherwise
  */
-char *get_args(char *line, int *exe_ret)
+char *get_args(char *line_read, int *exe_ret)
 {
 	size_t n = 0;
 	ssize_t read;
-	char *prompt = "$ ";
+	char *prompter = "$ ";
 
-	if (line)
-		free(line);
+	if (line_read)
+		free(line_read);
 
-	read = _getline(&line, &n, STDIN_FILENO);
+	read = _getline(&line_read, &n, STDIN_FILENO);
 	if (read == -1)
 		return (NULL);
 	if (read == 1)
 	{
 		hist++;
 		if (isatty(STDIN_FILENO))
-			write(STDOUT_FILENO, prompt, 2);
-		return (get_args(line, exe_ret));
+			write(STDOUT_FILENO, prompter, 2);
+		return (get_args(line_read, exe_ret));
 	}
 
-	line[read - 1] = '\0';
-	variable_replacement(&line, exe_ret);
-	handle_line(&line, read);
+	line_read[read - 1] = '\0';
+	variable_replacement(&line_read, exe_ret);
+	handle_line(&line_read, read);
 
-	return (line);
+	return (line_read);
 }
 
 /**
@@ -45,45 +45,45 @@ char *get_args(char *line, int *exe_ret)
  */
 int call_args(char **args, char **head, int *exe_ret)
 {
-	int y, index;
+	int y, ind;
 
 	if (!args[0])
 		return (*exe_ret);
-	for (index = 0; args[index]; index++)
+	for (ind = 0; args[ind]; ind++)
 	{
-		if (_strncmp(args[index], "||", 2) == 0)
+		if (_strncmp(args[ind], "||", 2) == 0)
 		{
-			free(args[index]);
-			args[index] = NULL;
+			free(args[ind]);
+			args[ind] = NULL;
 			args = replace_aliases(args);
 			y = run_args(args, head, exe_ret);
 			if (*exe_ret != 0)
 			{
-				args = &args[++index];
-				index = 0;
+				args = &args[++ind];
+				ind = 0;
 			}
 			else
 			{
-				for (index++; args[index]; index++)
-					free(args[index]);
+				for (ind++; args[ind]; ind++)
+					free(args[ind]);
 				return (y);
 			}
 		}
-		else if (_strncmp(args[index], "&&", 2) == 0)
+		else if (_strncmp(args[ind], "&&", 2) == 0)
 		{
-			free(args[index]);
-			args[index] = NULL;
+			free(args[ind]);
+			args[ind] = NULL;
 			args = replace_aliases(args);
 			y = run_args(args, head, exe_ret);
 			if (*exe_ret == 0)
 			{
-				args = &args[++index];
-				index = 0;
+				args = &args[++ind];
+				ind = 0;
 			}
 			else
 			{
-				for (index++; args[index]; index++)
-					free(args[index]);
+				for (ind++; args[ind]; ind++)
+					free(args[ind]);
 				return (y);
 			}
 		}
@@ -140,15 +140,15 @@ int run_args(char **args, char **head, int *exe_ret)
  */
 int handle_args(int *exe_ret)
 {
-	int y = 0, index;
-	char **args, *line = NULL, **head;
+	int y = 0, ind;
+	char **args, *line_read = NULL, **head;
 
-	line = get_args(line, exe_ret);
-	if (!line)
+	line_read = get_args(line_read, exe_ret);
+	if (!line_read)
 		return (END_OF_FILE);
 
-	args = _strtok(line, " ");
-	free(line);
+	args = _strtok(line_read, " ");
+	free(line_read);
 	if (!args)
 		return (y);
 	if (check_args(args) != 0)
@@ -159,15 +159,15 @@ int handle_args(int *exe_ret)
 	}
 	head = args;
 
-	for (index = 0; args[index]; index++)
+	for (ind = 0; args[ind]; ind++)
 	{
-		if (_strncmp(args[index], ";", 1) == 0)
+		if (_strncmp(args[ind], ";", 1) == 0)
 		{
-			free(args[index]);
-			args[index] = NULL;
+			free(args[ind]);
+			args[ind] = NULL;
 			y = call_args(args, head, exe_ret);
-			args = &args[++index];
-			index = 0;
+			args = &args[++ind];
+			ind = 0;
 		}
 	}
 	if (args)
@@ -188,14 +188,14 @@ int handle_args(int *exe_ret)
 int check_args(char **args)
 {
 	size_t z;
-	char *cur, *nex;
+	char *current, *nex;
 
 	for (z = 0; args[z]; z++)
 	{
-		cur = args[z];
-		if (cur[0] == ';' || cur[0] == '&' || cur[0] == '|')
+		current = args[z];
+		if (current[0] == ';' || current[0] == '&' || current[0] == '|')
 		{
-			if (z == 0 || cur[1] == ';')
+			if (z == 0 || current[1] == ';')
 				return (create_error(&args[z], 2));
 			nex = args[z + 1];
 			if (nex && (nex[0] == ';' || nex[0] == '&' || nex[0] == '|'))

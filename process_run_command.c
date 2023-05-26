@@ -51,9 +51,9 @@ int cant_open(char *file_path)
 int proc_file_commands(char *file_path, int *exe_ret)
 {
 	ssize_t file, b_read, z;
-	unsigned int line_size = 0;
-	unsigned int old_size = 120;
-	char *line, **args, **head;
+	unsigned int size_of_line = 0;
+	unsigned int size_of_old_line = 120;
+	char *line_read, **args, **head;
 	char buffer[120];
 	int y;
 
@@ -64,34 +64,34 @@ int proc_file_commands(char *file_path, int *exe_ret)
 		*exe_ret = cant_open(file_path);
 		return (*exe_ret);
 	}
-	line = malloc(sizeof(char) * old_size);
-	if (!line)
+	line_read = malloc(sizeof(char) * size_of_old_line);
+	if (!line_read)
 		return (-1);
 	do {
 		b_read = read(file, buffer, 119);
-		if (b_read == 0 && line_size == 0)
+		if (b_read == 0 && size_of_line == 0)
 			return (*exe_ret);
 		buffer[b_read] = '\0';
-		line_size += b_read;
-		line = _realloc(line, old_size, line_size);
-		_strcat(line, buffer);
-		old_size = line_size;
+		size_of_line += b_read;
+		line_read = _realloc(line_read, size_of_old_line, size_of_line);
+		_strcat(line_read, buffer);
+		size_of_old_line = size_of_line;
 	} while (b_read);
-	for (z = 0; line[z] == '\n'; z++)
-		line[z] = ' ';
-	for (; z < line_size; z++)
+	for (z = 0; line_read[z] == '\n'; z++)
+		line_read[z] = ' ';
+	for (; z < size_of_line; z++)
 	{
-		if (line[z] == '\n')
+		if (line_read[z] == '\n')
 		{
-			line[z] = ';';
-			for (z += 1; z < line_size && line[z] == '\n'; z++)
-				line[z] = ' ';
+			line_read[z] = ';';
+			for (z += 1; z < size_of_line && line_read[z] == '\n'; z++)
+				line_read[z] = ' ';
 		}
 	}
-	variable_replacement(&line, exe_ret);
-	handle_line(&line, line_size);
-	args = _strtok(line, " ");
-	free(line);
+	variable_replacement(&line_read, exe_ret);
+	handle_line(&line_read, size_of_line);
+	args = _strtok(line_read, " ");
+	free(line_read);
 	if (!args)
 		return (0);
 	if (check_args(args) != 0)

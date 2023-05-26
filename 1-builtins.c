@@ -32,12 +32,12 @@ int (*get_builtin(char *command))(char **args, char **head)
 /**
  * shellby_exit - Causes normal process termination
  * for the shellby shell.
- * @args: An array of arguments containing the exit val.
+ * @args: An array of arguments containing the exit value.
  * @head: A double pointer to the initial of args.
  *
  * Return: If there are no arguments - -3.
- *         If the given exit val is invalid - 2.
- *         O/w - exits with the given status val.
+ *         If the given exit value is invalid - 2.
+ *         O/w - exits with the given status value.
  *
  * Description: Upon returning -3, the program exits back in the main function.
  */
@@ -75,7 +75,7 @@ int shellby_exit(char **args, char **head)
 }
 
 /**
- * shellby_cd - Changes the current directory of the shellby process.
+ * shellby_cd - Changes the curr directory of the shellby process.
  * @args:This takes an array of arguments.
  * @head: A double pointer to the initial of args.
  *

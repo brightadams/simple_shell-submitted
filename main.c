@@ -2,7 +2,7 @@
 
 /**
  * sig_handler - function that Prints a new
- * prompt upon receiving a signal
+ * prompter upon receiving a signal
  * @sig: The signal received
  *
  * Return: void
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 {
 	int y = 0, retn;
 	int *exe_ret = &retn;
-	char *prompt = "$ ", *n_line = "\n";
+	char *prompter = "$ ", *n_line = "\n";
 
 	name = argv[0];
 	hist = 1;
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		write(STDOUT_FILENO, prompt, 2);
+		write(STDOUT_FILENO, prompter, 2);
 		y = handle_args(exe_ret);
 		if (y == END_OF_FILE || y == EXIT)
 		{

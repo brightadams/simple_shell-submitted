@@ -1,82 +1,82 @@
 #include "main.h"
 
 /**
- * _strlen - function that returns the len of a string
+ * _strlen - function that returns the length of a string
  * @string_chars: pointer to the characters string
  *
- * Return: len of the character string
+ * Return: length of the character string
  */
 int _strlen(const char *string_chars)
 {
-	int len = 0;
+	int length = 0;
 
 	if (!string_chars)
-		return (len);
-	for (len = 0; string_chars[len]; len++)
+		return (length);
+	for (length = 0; string_chars[length]; length++)
 		;
-	return (len);
+	return (length);
 }
 
 /**
  * _strcpy - function that copies the contents of the string
- * pointed to by src to the buffer pointed to by dest, including
+ * pointed to by string_source to the buffer pointed to by string_destination, including
  * the terminating null byte of the string
- * @dest: pointer to the destination of string to be copied
- * @src: pointer to the src of the source string
+ * @string_destination: pointer to the destination of string to be copied
+ * @string_source: pointer to the string_source of the source string
  *
- * Return: pointer to dest
+ * Return: pointer to string_destination
  */
-char *_strcpy(char *dest, const char *src)
+char *_strcpy(char *string_destination, const char *string_source)
 {
 	size_t z;
 
-	for (z = 0; src[z] != '\0'; z++)
-		dest[z] = src[z];
-	dest[z] = '\0';
-	return (dest);
+	for (z = 0; string_source[z] != '\0'; z++)
+		string_destination[z] = string_source[z];
+	string_destination[z] = '\0';
+	return (string_destination);
 }
 
 /**
  * _strcat - function that Concantenates two strings
- * @dest: a pointer to destination string
- * @src: a pointer to source string
+ * @string_destination: a pointer to destination string
+ * @string_source: a pointer to source string
  *
  * Return: pointer to destination string
  */
-char *_strcat(char *dest, const char *src)
+char *_strcat(char *string_destination, const char *string_source)
 {
-	char *destTemp;
-	const char *srcTemp;
+	char *temp_destination;
+	const char *temp_source;
 
-	destTemp = dest;
-	srcTemp =  src;
+	temp_destination = string_destination;
+	temp_source =  string_source;
 
-	while (*destTemp != '\0')
-		destTemp++;
+	while (*temp_destination != '\0')
+		temp_destination++;
 
-	while (*srcTemp != '\0')
-		*destTemp++ = *srcTemp++;
-	*destTemp = '\0';
-	return (dest);
+	while (*temp_source != '\0')
+		*temp_destination++ = *temp_source++;
+	*temp_destination = '\0';
+	return (string_destination);
 }
 
 /**
  * _strncat - function that concantenates two strings where n
- * number of bytes are copied from source
- * @dest: a pointer to the destination string
- * @src: a pointer to the source string
- * @n: number of bytes to copy from src
+ * number of bytes_size are copied from source
+ * @string_destination: a pointer to the destination string
+ * @string_source: a pointer to the source string
+ * @n: number of bytes_size to copy from string_source
  *
  * Return: pointer to destination string
  */
-char *_strncat(char *dest, const char *src, size_t n)
+char *_strncat(char *string_destination, const char *string_source, size_t n)
 {
-	size_t dest_len = _strlen(dest);
+	size_t destination_len = _strlen(string_destination);
 	size_t z;
 
-	for (z = 0; z < n && src[z] != '\0'; z++)
-		dest[dest_len + z] = src[z];
-	dest[dest_len + z] = '\0';
+	for (z = 0; z < n && string_source[z] != '\0'; z++)
+		string_destination[destination_len + z] = string_source[z];
+	string_destination[destination_len + z] = '\0';
 
-	return (dest);
+	return (string_destination);
 }

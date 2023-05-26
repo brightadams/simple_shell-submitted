@@ -8,15 +8,15 @@
  */
 char *get_location(char *command)
 {
-	char **path, *tem;
+	char **pathName, *tem;
 	list_t *dirs, *head;
 	struct stat st;
 
-	path = _getenv("PATH");
-	if (!path || !(*path))
+	pathName = _getenv("PATH");
+	if (!pathName || !(*pathName))
 		return (NULL);
 
-	dirs = get_path_dir(*path + 5);
+	dirs = get_path_dir(*pathName + 5);
 	head = dirs;
 
 	while (dirs)
@@ -45,84 +45,84 @@ char *get_location(char *command)
 }
 
 /**
- * fill_path_dir - function that copies path but also replaces
- * leading,sandwiched,trailing colons (:) with current working directory
- * @path: directories lis of colon-separated
+ * fill_path_dir - function that copies pathName but also replaces
+ * leading,sandwiched,trailing colons (:) with curr working directory
+ * @pathName: directories lis of colon-separated
  *
- * Return: copy of path with any leading,sandwiched,trailing
- * colons replacedwith the current working directory
+ * Return: copy of pathName with any leading,sandwiched,trailing
+ * colons replacedwith the curr working directory
  */
-char *fill_path_dir(char *path)
+char *fill_path_dir(char *pathName)
 {
-	int z, len = 0;
-	char *path_copy, *pass;
+	int z, length = 0;
+	char *copied_path, *pass;
 
 	pass = *(_getenv("PWD")) + 4;
-	for (z = 0; path[z]; z++)
+	for (z = 0; pathName[z]; z++)
 	{
-		if (path[z] == ':')
+		if (pathName[z] == ':')
 		{
-			if (path[z + 1] == ':' || z == 0 || path[z + 1] == '\0')
-				len += _strlen(pass) + 1;
+			if (pathName[z + 1] == ':' || z == 0 || pathName[z + 1] == '\0')
+				length += _strlen(pass) + 1;
 			else
-				len++;
+				length++;
 		}
 		else
-			len++;
+			length++;
 	}
-	path_copy = malloc(sizeof(char) * (len + 1));
-	if (!path_copy)
+	copied_path = malloc(sizeof(char) * (length + 1));
+	if (!copied_path)
 		return (NULL);
-	path_copy[0] = '\0';
-	for (z = 0; path[z]; z++)
+	copied_path[0] = '\0';
+	for (z = 0; pathName[z]; z++)
 	{
-		if (path[z] == ':')
+		if (pathName[z] == ':')
 		{
 			if (z == 0)
 			{
-				_strcat(path_copy, pass);
-				_strcat(path_copy, ":");
+				_strcat(copied_path, pass);
+				_strcat(copied_path, ":");
 			}
-			else if (path[z + 1] == ':' || path[z + 1] == '\0')
+			else if (pathName[z + 1] == ':' || pathName[z + 1] == '\0')
 			{
-				_strcat(path_copy, ":");
-				_strcat(path_copy, pass);
+				_strcat(copied_path, ":");
+				_strcat(copied_path, pass);
 			}
 			else
-				_strcat(path_copy, ":");
+				_strcat(copied_path, ":");
 		}
 		else
 		{
-			_strncat(path_copy, &path[z], 1);
+			_strncat(copied_path, &pathName[z], 1);
 		}
 	}
-	return (path_copy);
+	return (copied_path);
 }
 
 /**
  * get_path_dir - function that tokenizes a colon-separated
  * list of directories into a list_s linked list
- * @path: directories list of  colon-separated
+ * @pathName: directories list of  colon-separated
  *
  * Return: pointer to initialized linked list
  */
-list_t *get_path_dir(char *path)
+list_t *get_path_dir(char *pathName)
 {
-	int index;
-	char **dirs, *path_copy;
+	int ind;
+	char **dirs, *copied_path;
 	list_t *head = NULL;
 
-	path_copy = fill_path_dir(path);
-	if (!path_copy)
+	copied_path = fill_path_dir(pathName);
+	if (!copied_path)
 		return (NULL);
-	dirs = _strtok(path_copy, ":");
-	free(path_copy);
+	dirs = _strtok(copied_path, ":");
+	free(copied_path);
 	if (!dirs)
 		return (NULL);
 
-	for (index = 0; dirs[index]; index++)
+	for (ind = 0; dirs[ind]; ind++)
 	{
-		if (add_node_end(&head, dirs[index]) == NULL)
+		if (add_node_end(&head, dirs[ind]) == NULL)
 		{
 			free_list(head);
 			free(dirs);

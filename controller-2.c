@@ -2,29 +2,29 @@
 
 /**
  * num_len - function that counts the digital
- * len of a number
+ * length of a number
  * @numb: The number to be measured
  *
  * Return: the digital lenghth
  */
 int num_len(int numb)
 {
-	unsigned int num1;
+	unsigned int numb1;
 	int leng = 1;
 
 	if (numb < 0)
 	{
 		leng++;
-		num1 = numb * -1;
+		numb1 = numb * -1;
 	}
 	else
 	{
-		num1 = numb;
+		numb1 = numb;
 	}
-	while (num1 > 9)
+	while (numb1 > 9)
 	{
 		leng++;
-		num1 /= 10;
+		numb1 /= 10;
 	}
 
 	return (leng);
@@ -41,7 +41,7 @@ char *_itoa(int numb)
 {
 	char *buffer;
 	int leng = num_len(numb);
-	unsigned int num1;
+	unsigned int numb1;
 
 	buffer = malloc(sizeof(char) * (leng + 1));
 	if (!buffer)
@@ -51,20 +51,20 @@ char *_itoa(int numb)
 
 	if (numb < 0)
 	{
-		num1 = numb * -1;
+		numb1 = numb * -1;
 		buffer[0] = '-';
 	}
 	else
 	{
-		num1 = numb;
+		numb1 = numb;
 	}
 
 	leng--;
 	do {
-		buffer[leng] = (num1 % 10) + '0';
-		num1 /= 10;
+		buffer[leng] = (numb1 % 10) + '0';
+		numb1 /= 10;
 		leng--;
-	} while (num1 > 0);
+	} while (numb1 > 0);
 
 	return (buffer);
 }
