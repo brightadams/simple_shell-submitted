@@ -8,7 +8,7 @@
 
 void _env_help(void)
 {
-	char *mess = "env: env\n\tPrints the curr environment.\n";
+	char *mess = "env: env\n\tPrints the CWD.\n";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
 }
@@ -21,12 +21,12 @@ void _env_help(void)
 
 void _setenv_help(void)
 {
-	char *mess = "setenv: setenv [VARIABLE] [VALUE]\n\tInitializes a new";
+	char *mess = "setenv: setenv [VARIABLE] [VALUE]\n\tInitializes new";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = "environment variable, or modifies an existing one.\n\n";
+	mess = "env var or modifies an existing env var.\n\n";
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = "\tUpon failure, prints a message to stderr.\n";
+	mess = "\tIf fails, prints a message to stderr.\n";
 	write(STDOUT_FILENO, mess, _str_len(mess));
 }
 
@@ -41,9 +41,9 @@ void _unsetenv_helper(void)
 	char *mess = "unsetenv: unsetenv [VARIABLE]\n\tRemoves an ";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = "environmental variable.\n\n\tUpon failure, prints a ";
+	mess = "env var.\n\n\tif it fails, prints a ";
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = "message to stderr.\n";
+	mess = "msg to STDERROR.\n";
 	write(STDOUT_FILENO, mess, _str_len(mess));
 }
 

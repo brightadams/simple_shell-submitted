@@ -12,10 +12,10 @@
 
 void show_all_commands(void)
 {
-	char *mess = "Shellby\nThese shell commands are defined internally.\n";
+	char *mess = "Shellby\nThe ff commands are in-built.\n";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = "Type 'help' to see this list.\nType 'help name' to find ";
+	mess = "Type 'help' to see the list.\nType 'help name' to find ";
 	write(STDOUT_FILENO, mess, _str_len(mess));
 	mess = "out more about the function 'name'.\n\n  alias   \t";
 	write(STDOUT_FILENO, mess, _str_len(mess));
@@ -70,10 +70,10 @@ void show_help_alias(void)
 
 void show_help_cd(void)
 {
-	char *mess = "cd: cd [DIRECTORY]\n\tChanges the curr directory of the";
+	char *mess = "cd: cd [DIRECTORY]\n\tChanges the current dir of the";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
-	mess = " process to DIRECTORY.\n\n\tIf no argument is given, the ";
+	mess = " process to DIR.\n\n\tIf no arg is given, the ";
 	write(STDOUT_FILENO, mess, _str_len(mess));
 	mess = "command is interpreted as cd $HOME. If the argument '-' is";
 	write(STDOUT_FILENO, mess, _str_len(mess));
@@ -124,7 +124,7 @@ void exit_help(void)
 
 void help_helper(void)
 {
-	char *mess = "help: help\n\tSee all possible Shellby builtin commands.\n";
+	char *mess = "help: help\n\tView all possible Shellby builtin commands.\n";
 
 	write(STDOUT_FILENO, mess, _str_len(mess));
 	mess = "\n      help [BUILTIN NAME]\n\tSee specific information on each ";
